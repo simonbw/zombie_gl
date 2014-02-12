@@ -8,6 +8,16 @@
       console.log("new zombie spawner " + this.chance);
     }
 
+    ZombieSpawner.prototype.init = function(game) {
+      this.mesh = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        transparent: true,
+        opacity: 0.5
+      }));
+      this.mesh.position.set(this.x, this.y, 4);
+      return game.scene.add(this.mesh);
+    };
+
     ZombieSpawner.prototype.update = function(game) {
       var zombie;
       if (Random.bool(this.chance / 60)) {
