@@ -12,12 +12,26 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 SIZE = 0.6
 
 class window.Box
+	@SIZE = SIZE
+
+	hitEffectType: "wood"
+
 	constructor: (x, y) ->
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), new THREE.MeshPhongMaterial({color: 0xFF0000}))
+
+		texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
+		bump = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
+		material = new THREE.MeshPhongMaterial {
+			map: texture,
+			bumpMap: bump,
+			bumpScale: 0.02
+		}
+		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), material)
 		@mesh.position.set(x, y, SIZE / 2)
 
 		@mesh.castShadow = true
 		@mesh.recieveShadow = true
+
+		@health = 100
 
 	init: (game) ->
 		# Graphics
@@ -25,7 +39,7 @@ class window.Box
 
 		# Physics
 		fixDef = new b2FixtureDef()
-		fixDef.density = 1.0
+		fixDef.density = 2.0
 		fixDef.friction = 0.5
 		fixDef.restitution = 0.02
 		fixDef.shape = new b2PolygonShape()
@@ -38,7 +52,7 @@ class window.Box
 		@body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
 		@body.CreateFixture(fixDef)
 		@body.SetLinearDamping(10.0)
-		@body.SetAngularDamping(10.0)
+		@body.SetAngularDamping(30.0)
 
 	update: (game)->
 		# Update graphics
@@ -46,3 +60,16 @@ class window.Box
 		@mesh.position.x = p.x
 		@mesh.position.y = p.y
 		@mesh.rotation.z = @body.GetAngle()
+
+	hit: (game, other) =>
+		if other.isBullet
+			p = @body.GetWorldCenter()
+			@health -= 5
+			if @health <= 0 && !@alreadyRemoved
+				game.removeEntity(this)
+				effect = new BoxBrokenEffect(p.x, p.y, @body.GetAngle())
+				game.addEntity(effect)
+
+	dispose: (game) =>
+		game.world.DestroyBody(@body)
+		game.scene.remove(@mesh)

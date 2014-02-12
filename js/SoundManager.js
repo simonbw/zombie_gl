@@ -8,6 +8,8 @@
         alert("No context support");
       }
       this.loadSound('pistol_shot');
+      this.loadSound('pistol_reload');
+      this.loadSound('pistol_empty');
     }
 
     SoundManager.prototype.loadSound = function(name) {
@@ -36,10 +38,14 @@
 
     SoundManager.prototype.playSound = function(name) {
       var source;
-      source = this.context.createBufferSource();
-      source.buffer = this.buffers[name];
-      source.connect(this.context.destination);
-      return source.start(0);
+      if (this.buffers[name]) {
+        source = this.context.createBufferSource();
+        source.buffer = this.buffers[name];
+        source.connect(this.context.destination);
+        return source.start(0);
+      } else {
+        return console.log("sound " + name + " not loaded");
+      }
     };
 
     return SoundManager;

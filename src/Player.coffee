@@ -16,11 +16,14 @@ FLASHLIGHT_INTENSITY = 0.65
 FLASHLIGHT_DISTANCE = 32
 
 class window.Player
-	constructor: ->
+	constructor: (@x, @y) ->
+		@health = 100
 		@facingDirection = 0
-		@gun = new Gun()
+		# @gun = new Pistol()
+		@gun = new SMG()
 		
 		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0x00DD00}))
+		@mesh.position.z = HEIGHT / 2
 		@mesh.rotation.x = Math.PI / 2
 		
 		@flashlight = new THREE.SpotLight(0xFFFFBB, FLASHLIGHT_INTENSITY, FLASHLIGHT_DISTANCE)
@@ -42,11 +45,12 @@ class window.Player
 		fixDef.density = 1.0
 		fixDef.friction = 0.5
 		fixDef.restitution = 0.0
-		fixDef.shape = new b2CircleShape(RADIUS * 0.9)
+		fixDef.shape = new b2CircleShape(RADIUS * 0.98)
 		bodyDef = new b2BodyDef()
 		bodyDef.type = b2Body.b2_dynamicBody
 
 		@body = game.world.CreateBody(bodyDef)
+		@body.SetPosition(new b2Vec2(@x, @y))
 		@body.SetUserData(this)
 		@body.CreateFixture(fixDef)
 		@body.SetLinearDamping(10.0)
@@ -56,6 +60,8 @@ class window.Player
 	update: (game)->
 		@facingDirection = game.io.lookDirection
 		p = @body.GetWorldCenter()
+		@x = p.x
+		@y = p.y
 		dx = Math.cos(@facingDirection)
 		dy = Math.sin(@facingDirection)
 		v = @body.GetLinearVelocity()
@@ -64,9 +70,11 @@ class window.Player
 		aimDistance = 200
 
 		# Gun
-		@gun.update()
-		if (@gun.fullauto && game.io.trigger) || (!@gun.fullauto && game.io.triggerPressed)
-			@gun.fire(game, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0)
+		@gun.update(game)
+		if game.io.trigger
+			@gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0)
+		if game.io.reloadPressed
+			@gun.reload(game)
 
 		# Physics
 		impulse = new b2Vec2(SPEED * game.io.moveX, SPEED * game.io.moveY)
@@ -83,3 +91,6 @@ class window.Player
 		@flashlight.position.set(p.x + dx * RADIUS, p.y + dy * RADIUS, HEIGHT * 0.6)
 		@flashlight.target.position.set(p.x + aimDistance * dx, p.y + aimDistance * dy, aimHeight)
 
+	hit: (game, other) =>
+		if other.isZombie
+			@health -= 3

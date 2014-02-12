@@ -23,6 +23,8 @@
   HEIGHT = 15.0;
 
   window.Building = (function() {
+    Building.prototype.hitEffectType = "concrete";
+
     function Building(x, y) {
       this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
@@ -44,6 +46,7 @@
       bodyDef = new b2BodyDef();
       bodyDef.type = b2Body.b2_staticBody;
       this.body = game.world.CreateBody(bodyDef);
+      this.body.SetUserData(this);
       this.body.SetPosition(new b2Vec2(this.mesh.position.x, this.mesh.position.y));
       return this.body.CreateFixture(fixDef);
     };

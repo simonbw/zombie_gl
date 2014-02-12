@@ -1,13 +1,14 @@
-POINT_LIGHTS = 6
-SPOT_LIGHTS = 1
+POINT_LIGHTS = 7
+SPOT_LIGHTS = 0
 
 # Manages allocation of the 8 allowed lights
 class window.LightManager
 
 	constructor: (game) ->
-		@pointLightRequests = []
-
+		
+	reset: (game) ->
 		@pointLights = []
+		@pointLightRequests = []
 
 		i = 0
 		while i < POINT_LIGHTS
@@ -16,7 +17,6 @@ class window.LightManager
 			@pointLights.push(l)
 			l.position.set(10, -10, 10)
 			game.scene.add(l)
-			console.log "creating pointlight " + i
 
 	update: (game) ->
 		# remove disposed
@@ -32,7 +32,7 @@ class window.LightManager
 		@pointLightRequests.sort (a, b) ->
 			distA = (Math.pow(a.position.x - cx, 2) + Math.pow(a.position.y - cy, 2)) 
 			distB = (Math.pow(b.position.x - cx, 2) + Math.pow(b.position.y - cy, 2)) 
-			return distA - distB
+			return distA * a.priority / a.distance - distB * b.priority / b.distance
 
 		# # assign lights to the top requested
 		i = 0
@@ -65,25 +65,25 @@ class window.LightManager
 
 # Treat this like a light
 class RequestedPointLight
-	constructor: (x, y, z, @intensity, @distance, @color) ->
+	constructor: (x, y, z, @intensity, @distance, @color, @priority = 1.0) ->
 		@disposed = false
 		@enabled = true
 		@position = new THREE.Vector3(x, y, z)
 		@light = null
 
-	giveLight: (light) ->
+	giveLight: (light) =>
 		@light = light
 		@update()
 
-	update: () ->
+	update: () =>
 		if @light
 			@light.position.set(@position.x, @position.y, @position.z)
 			@light.intensity = @intensity
 			@light.distance = @distance
 			@light.color.setHex(@color)
 
-	removeLight: ->
+	removeLight: =>
 		@light = null
 
-	dispose: ->
+	dispose: =>
 		@disposed = true

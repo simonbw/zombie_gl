@@ -1,3 +1,5 @@
+LIFESPAN = 3
+
 LIGHT_RADIUS = 16
 LIGHT_INTENSITY = 0.2
 LIGHT_COLOR = 0xFFDDAA
@@ -23,32 +25,36 @@ class window.MuzzleFlash
 			map: THREE.ImageUtils.loadTexture("resources/images/particle.png"),
 			blending: THREE.AdditiveBlending,
 			transparent: true
-			}
+		}
 
 		@particles = new THREE.ParticleSystem(geom, material)
-		@particles.position.set(@x - @vx, @y - @vy, @z)
+		@particles.sortParticles = true
+		@particles.position.set(@x, @y, @z)
 
-	init: (game) ->
+	init: (game) =>
 		game.scene.add(@particles)
 		@light = game.lightManager.getPointLight(@x, @y, @z)
 		@light.intensity = LIGHT_INTENSITY
 		@light.color = LIGHT_COLOR
 		@light.distance = LIGHT_RADIUS
 		@light.update()
-		@lifespan = 3
+		@lifespan = LIFESPAN
 
-	update: (game) ->
+	update: (game) =>
 		@lifespan--
 		if @lifespan <= 0
 			game.removeEntity(this)
 		else
-			# @light.intensity *= 0.9
+			@light.intensity = LIGHT_INTENSITY * @lifespan / LIFESPAN
 			@light.position.x += @vx
 			@light.position.y += @vy
 			@light.update()
 			@particles.position.x += @vx
 			@particles.position.y += @vy
 
-	dispose: (game) ->
+	dispose: (game) =>
+		if @disposed
+			console.log "removing muzzleFlash twice"
+		@disposed = true
 		@light.dispose()
 		game.scene.remove(@particles)

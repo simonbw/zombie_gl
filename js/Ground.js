@@ -6,11 +6,19 @@
 
   window.Ground = (function() {
     function Ground(x, y) {
-      this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE, 1, 1), new THREE.MeshPhongMaterial({
-        color: 0x777777,
+      var material, texture;
+      texture = new THREE.ImageUtils.loadTexture("resources/images/ground.png");
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(50, 50);
+      material = new THREE.MeshPhongMaterial({
+        color: 0x555555,
         specular: 0x777777,
+        bumpMap: texture,
+        bumpScale: 0.01,
         shininess: 0
-      }));
+      });
+      this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE, 1, 1), material);
       this.mesh.position.set(x, y, 0);
     }
 

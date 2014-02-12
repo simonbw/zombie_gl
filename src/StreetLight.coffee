@@ -11,16 +11,20 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 # Constants
 SIZE = 0.2
 HEIGHT = 5.0
-LIGHT_COLOR = 0xFFEECC
-LIGHT_RADIUS = 128
-LIGHT_INTENSITY = 0.8
+LIGHT_COLOR = 0x55AAFF
+LIGHT_RADIUS = 20
+LIGHT_INTENSITY = 0.4
 
 class window.StreetLight
+	
+	hitEffectType: "metal"
+
 	constructor: (x, y) ->
 		@x = x
 		@y = y
 
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), new THREE.MeshPhongMaterial({color: 0x222222}))
+		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1), new THREE.MeshPhongMaterial({color: 0x222222}))
+		@mesh.rotation.x = Math.PI / 2
 		@mesh.position.set(x, y, HEIGHT / 2)
 
 	init: (game) ->
@@ -34,8 +38,7 @@ class window.StreetLight
 		fixDef.density = 1.0
 		fixDef.friction = 0.5
 		fixDef.restitution = 0.02
-		fixDef.shape = new b2PolygonShape()
-		fixDef.shape.SetAsBox(SIZE / 2, SIZE / 2)
+		fixDef.shape = new b2CircleShape(SIZE)
 		bodyDef = new b2BodyDef()
 		bodyDef.type = b2Body.b2_staticBody
 

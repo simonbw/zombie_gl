@@ -13,6 +13,9 @@ SIZE = 10.0
 HEIGHT = 15.0
 
 class window.Building
+
+	hitEffectType: "concrete"
+	
 	constructor: (x, y) ->
 		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), new THREE.MeshPhongMaterial({
 			color: 0xDDDDDD,
@@ -39,5 +42,6 @@ class window.Building
 		bodyDef.type = b2Body.b2_staticBody
 
 		@body = game.world.CreateBody(bodyDef)
+		@body.SetUserData(this)
 		@body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
 		@body.CreateFixture(fixDef)

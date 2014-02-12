@@ -34,31 +34,13 @@
       this.addEntity = __bind(this.addEntity, this);
       this.start = __bind(this.start, this);
       console.log("Created New Game");
-    }
-
-    Game.prototype.start = function() {
-      var listener;
-      console.log("Starting Game");
-      this.updateList = [];
-      this.updateList2 = [];
-      this.toRemove = [];
-      this.io = new IO();
-      this.world = new b2World(new b2Vec2(0, 0), true);
+      this.io = new IO(this);
       Box2D.Common.b2Settings.b2_maxTranslation = 5.0;
       this.renderer = new THREE.WebGLRenderer({
         antialias: true
       });
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       window.document.body.appendChild(this.renderer.domElement);
-      this.scene = new THREE.Scene();
-      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000);
-      this.scene.add(this.camera);
-      this.camera.position.set(0, 0, 20);
-      this.camera.lookAt({
-        x: 0,
-        y: 0,
-        z: 0
-      });
       window.addEventListener('resize', (function(_this) {
         return function() {
           _this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,6 +50,18 @@
       })(this));
       this.lightManager = new LightManager(this);
       this.soundManager = new SoundManager(this);
+    }
+
+    Game.prototype.initWorld = function() {
+      var body, listener, _i, _len, _ref;
+      if (this.world) {
+        _ref = this.world.GetBodyList();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          body = _ref[_i];
+          this.world.DestroyBody(body);
+        }
+      }
+      this.world = new b2World(new b2Vec2(0, 0), true);
       listener = new Box2D.Dynamics.b2ContactListener();
       listener.BeginContact = (function(_this) {
         return function(contact) {
@@ -79,33 +73,100 @@
             hit = a.hit(_this, b);
           }
           if (b && b.hit) {
-            hit = hit || b.hit(_this, a);
-          }
-          if (hit) {
-            return contact.SetEnabled(false);
+            return hit = b.hit(_this, a) || hit;
           }
         };
       })(this);
-      this.world.SetContactListener(listener);
-      this.player = this.addEntity(new Player());
-      this.addEntity(new Building(100, 0));
-      this.addEntity(new Building(-100, 0));
-      this.addEntity(new Building(-100, 100));
-      this.addEntity(new Building(-100, -100));
-      this.addEntity(new Building(100, -100));
-      this.addEntity(new Building(100, 100));
+      listener.PostSolve = (function(_this) {
+        return function(contact, impulse) {
+          var a, b;
+          a = contact.GetFixtureA().GetBody().GetUserData();
+          b = contact.GetFixtureB().GetBody().GetUserData();
+          if (a && a.hit2) {
+            a.hit2(_this, b, impulse);
+          }
+          if (b && b.hit2) {
+            return b.hit2(_this, a, impulse);
+          }
+        };
+      })(this);
+      return this.world.SetContactListener(listener);
+    };
+
+    Game.prototype.initScene = function() {
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000);
+      this.scene.add(this.camera);
+      this.camera.position.set(0, 0, 20);
+      this.camera.lookAt({
+        x: 0,
+        y: 0,
+        z: 0
+      });
+      return this.lightManager.reset(this);
+    };
+
+    Game.prototype.start = function() {
+      var i, _i;
+      if (this.request) {
+        window.cancelAnimationFrame(this.request);
+      }
+      this.updateList = [];
+      this.updateList2 = [];
+      this.toRemove = [];
+      this.initWorld();
+      this.initScene();
+      this.player = this.addEntity(new Player(0, 1));
       this.addEntity(new Ground(0, 0));
-      this.addEntity(new Ground(500, 0));
-      this.addEntity(new Ground(500, 500));
-      this.addEntity(new Ground(0, 500));
-      this.addEntity(new Ground(-500, 500));
-      this.addEntity(new Ground(-500, 0));
-      this.addEntity(new Ground(-500, -500));
-      this.addEntity(new Ground(0, -500));
-      this.addEntity(new Ground(500, -500));
-      this.addEntity(new Box(20, 0));
-      this.addEntity(new StreetLight(50, 0));
-      this.addEntity(new StreetLight(50, 50));
+      this.addEntity(new StreetLight(0, 0));
+      this.addEntity(new StreetLight(0, -17.5));
+      this.addEntity(new StreetLight(0, 17.5));
+      this.addEntity(new Building(10, -25));
+      this.addEntity(new Building(10, -10));
+      this.addEntity(new Building(10, 0));
+      this.addEntity(new Building(10, 10));
+      this.addEntity(new Building(10, 25));
+      this.addEntity(new Building(5, -40));
+      this.addEntity(new Building(15, -40));
+      this.addEntity(new Building(25, -30));
+      this.addEntity(new Building(25, -20));
+      this.addEntity(new Building(25, -10));
+      this.addEntity(new Building(25, 0));
+      this.addEntity(new Building(25, 10));
+      this.addEntity(new Building(25, 20));
+      this.addEntity(new Building(25, 30));
+      this.addEntity(new Building(15, 40));
+      this.addEntity(new Building(5, 40));
+      this.addEntity(new Building(-10, -25));
+      this.addEntity(new Building(-10, -10));
+      this.addEntity(new Building(-10, 0));
+      this.addEntity(new Building(-10, 10));
+      this.addEntity(new Building(-10, 25));
+      this.addEntity(new Building(-5, -40));
+      this.addEntity(new Building(-15, -40));
+      this.addEntity(new Building(-25, -30));
+      this.addEntity(new Building(-25, -20));
+      this.addEntity(new Building(-25, -10));
+      this.addEntity(new Building(-25, 0));
+      this.addEntity(new Building(-25, 10));
+      this.addEntity(new Building(-25, 20));
+      this.addEntity(new Building(-25, 30));
+      this.addEntity(new Building(-15, 40));
+      this.addEntity(new Building(-5, 40));
+      this.addEntity(new ZombieSpawner(17.5, 32.5, 0.1));
+      this.addEntity(new ZombieSpawner(17.5, -32.5, 0.1));
+      this.addEntity(new ZombieSpawner(-17.5, 32.5, 0.1));
+      this.addEntity(new ZombieSpawner(-17.5, -32.5, 0.1));
+      for (i = _i = 1; _i < 11; i = ++_i) {
+        this.addEntity(new Box(2, i * 3));
+        this.addEntity(new Box(-2, i * 3));
+        this.addEntity(new Box(2, -i * 3));
+        this.addEntity(new Box(-2, -i * 3));
+        this.addEntity(new Box(17.5, i * 3));
+        this.addEntity(new Box(-17.5, i * 3));
+        this.addEntity(new Box(17.5, -i * 3));
+        this.addEntity(new Box(-17.5, -i * 3));
+      }
       console.log("Game Started Successfully");
       return this.update();
     };
@@ -124,7 +185,8 @@
     };
 
     Game.prototype.removeEntity = function(entity) {
-      if (entity.update || entity.update2 || entity.dispose) {
+      if (!entity.alreadyRemoved && (entity.update || entity.update2 || entity.dispose)) {
+        entity.alreadyRemoved = true;
         this.toRemove.push(entity);
       }
       return entity;
@@ -150,7 +212,7 @@
 
     Game.prototype.update = function() {
       var entity, i, n, _i, _j, _len, _len1, _ref, _ref1;
-      window.requestAnimationFrame(this.update);
+      this.request = window.requestAnimationFrame(this.update);
       this.render();
       this.io.update();
       if (this.io.moveX !== 0) {
@@ -177,7 +239,12 @@
       this.camera.position.x = 0.9 * this.camera.position.x + 0.1 * this.player.mesh.position.x;
       this.camera.position.y = 0.9 * this.camera.position.y + 0.1 * this.player.mesh.position.y;
       this.camera.position.z += -this.camera.position.z * this.io.zoom * 0.01;
-      return this.lightManager.update(this);
+      this.lightManager.update(this);
+      this.io.update2();
+      if (this.player.health <= 0) {
+        console.log("You Lose");
+        return this.start();
+      }
     };
 
     Game.prototype.render = function() {

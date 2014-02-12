@@ -10,30 +10,35 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
 # Constants
 RADIUS = 0.05
-SPEED = 0.1
+SPEED = 0.5
 
 class window.Bullet
+	isBullet: true
+
 	constructor: (@x, @y, @z, @dx, @dy, @vx, @vy) ->
 
 	init: (game) ->
 		# Graphics
 		@mesh = new THREE.Mesh(new THREE.SphereGeometry(RADIUS * 1.0, 16, 16), new THREE.MeshBasicMaterial({color:0xFFAA00}))
+		@mesh.visible = false
 		game.scene.add(@mesh)
 		@mesh.position.set(@x, @y, @z)
+
+		@light = game.req
 
 		# Physics
 		fixDef = new b2FixtureDef()
 		fixDef.density = 0.1
 		fixDef.friction = 0.5
-		fixDef.restitution = 1.0
+		fixDef.restitution = 0.0
 		fixDef.shape = new b2CircleShape(RADIUS * 0.9)
 		bodyDef = new b2BodyDef()
 		bodyDef.type = b2Body.b2_dynamicBody
+		bodyDef.bullet = true
 
 		@body = game.world.CreateBody(bodyDef)
 		@body.SetUserData(this)
 		@body.CreateFixture(fixDef)
-		@body.isBullet = true
 		@body.SetPosition(new b2Vec2(@x, @y))
 		@body.SetLinearVelocity(new b2Vec2(@vx, @vy))
 		s = Random.normal(SPEED / 10, SPEED)
@@ -49,10 +54,16 @@ class window.Bullet
 		@lifespan -= 1 / 60.0
 		if @lifespan <= 0
 			game.removeEntity(this)
-			console.log "bullet expired"
-			
+	
 	hit: (game, other) =>
-		game.removeEntity(this)
+		if other != null && !@alreadyRemoved
+			p = @body.GetWorldCenter()
+			hitEffectType = null
+			if other && other.hitEffectType
+				hitEffectType = other.hitEffectType
+			effect = new HitEffect(p.x, p.y, @z, hitEffectType)
+			game.addEntity(effect)
+			game.removeEntity(this)
 		return true
 
 	dispose: (game) =>

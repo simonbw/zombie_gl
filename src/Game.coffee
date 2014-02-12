@@ -16,26 +16,13 @@ PHYSICS_STEPS = 3
 class window.Game
 	constructor: () ->
 		console.log("Created New Game")
-
-	start: =>
-		console.log("Starting Game")
-		@updateList = []
-		@updateList2 = []
-		@toRemove = []
-		@io = new IO()
-		@world = new b2World(new b2Vec2(0, 0), true)
+		@io = new IO(this)
 		Box2D.Common.b2Settings.b2_maxTranslation = 5.0
-
+		
 		@renderer = new THREE.WebGLRenderer({antialias:true})
 		@renderer.setSize window.innerWidth, window.innerHeight
 		window.document.body.appendChild(@renderer.domElement)
 
-		@scene = new THREE.Scene()
-		@camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000)
-		@scene.add(@camera)
-		@camera.position.set(0, 0, 20)
-		@camera.lookAt({x:0, y:0, z:0})
-		
 		window.addEventListener 'resize', =>
 			@renderer.setSize window.innerWidth, window.innerHeight
 			@camera.aspect = window.innerWidth / window.innerHeight
@@ -43,7 +30,15 @@ class window.Game
 
 		@lightManager = new LightManager(this)
 		@soundManager = new SoundManager(this)
+	
+	initWorld: ->
+		# cleanup
+		if @world
+			for body in @world.GetBodyList()
+				@world.DestroyBody(body)
 		
+		# make new world
+		@world = new b2World(new b2Vec2(0, 0), true)
 		listener = new Box2D.Dynamics.b2ContactListener()
 		listener.BeginContact = (contact) =>
 			a = contact.GetFixtureA().GetBody().GetUserData()
@@ -53,37 +48,101 @@ class window.Game
 			if a && a.hit
 				hit = a.hit(this, b)
 			if b && b.hit
-				hit = hit || b.hit(this, a)
+				hit = b.hit(this, a) || hit
 
-			if hit
-				contact.SetEnabled(false)
+			# if hit
+			# 	contact.SetEnabled(false)
+		listener.PostSolve = (contact, impulse) =>
+			a = contact.GetFixtureA().GetBody().GetUserData()
+			b = contact.GetFixtureB().GetBody().GetUserData()
+
+			if a && a.hit2
+				a.hit2(this, b, impulse)
+			if b && b.hit2
+				b.hit2(this, a, impulse)
 		@world.SetContactListener(listener)
 
-		# ================================ #
-		# ----------- ENTITIES ----------- #
-		# ================================ #
+	initScene: ->
+		@scene = new THREE.Scene()
+		@camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000)
+		@scene.add(@camera)
+		@camera.position.set(0, 0, 20)
+		@camera.lookAt({x:0, y:0, z:0})
 
-		@player = @addEntity(new Player())
-		@addEntity(new Building(100, 0))
-		@addEntity(new Building(-100, 0))
-		@addEntity(new Building(-100, 100))
-		@addEntity(new Building(-100, -100))
-		@addEntity(new Building(100, -100))
-		@addEntity(new Building(100, 100))
+		@lightManager.reset(this)
+
+	start: =>
+		if @request
+			window.cancelAnimationFrame(@request)
+
+		@updateList = []
+		@updateList2 = []
+		@toRemove = []
+
+		@initWorld()
+		@initScene()
+
+		@player = @addEntity(new Player(0, 1))
 		@addEntity(new Ground(0, 0))
-		@addEntity(new Ground(500, 0))
-		@addEntity(new Ground(500, 500))
-		@addEntity(new Ground(0, 500))
-		@addEntity(new Ground(-500, 500))
-		@addEntity(new Ground(-500, 0))
-		@addEntity(new Ground(-500, -500))
-		@addEntity(new Ground(0, -500))
-		@addEntity(new Ground(500, -500))
+		@addEntity(new StreetLight(0, 0))
+		@addEntity(new StreetLight(0, -17.5))
+		@addEntity(new StreetLight(0, 17.5))
 
-		@addEntity(new Box(20, 0))
+		@addEntity(new Building(10, -25))
+		@addEntity(new Building(10, -10))
+		@addEntity(new Building(10, 0))
+		@addEntity(new Building(10, 10))
+		@addEntity(new Building(10, 25))
+		@addEntity(new Building(5, -40))
+		@addEntity(new Building(15, -40))
+		@addEntity(new Building(25, -30))
+		@addEntity(new Building(25, -20))
+		@addEntity(new Building(25, -10))
+		@addEntity(new Building(25, 0))
+		@addEntity(new Building(25, 10))
+		@addEntity(new Building(25, 20))
+		@addEntity(new Building(25, 30))
+		@addEntity(new Building(15, 40))
+		@addEntity(new Building(5, 40))
 
-		@addEntity(new StreetLight(50, 0))
-		@addEntity(new StreetLight(50, 50))
+		@addEntity(new Building(-10, -25))
+		@addEntity(new Building(-10, -10))
+		@addEntity(new Building(-10, 0))
+		@addEntity(new Building(-10, 10))
+		@addEntity(new Building(-10, 25))
+		@addEntity(new Building(-5, -40))
+		@addEntity(new Building(-15, -40))
+		@addEntity(new Building(-25, -30))
+		@addEntity(new Building(-25, -20))
+		@addEntity(new Building(-25, -10))
+		@addEntity(new Building(-25, 0))
+		@addEntity(new Building(-25, 10))
+		@addEntity(new Building(-25, 20))
+		@addEntity(new Building(-25, 30))
+		@addEntity(new Building(-15, 40))
+		@addEntity(new Building(-5, 40))
+
+
+		# @addEntity(new ZombieSpawner(0, 18, 0.1))
+		# @addEntity(new ZombieSpawner(0, -18, 0.1))
+
+		# corners
+		@addEntity(new ZombieSpawner(17.5, 32.5, 0.1))
+		@addEntity(new ZombieSpawner(17.5, -32.5, 0.1))
+		@addEntity(new ZombieSpawner(-17.5, 32.5, 0.1))
+		@addEntity(new ZombieSpawner(-17.5, -32.5, 0.1))
+
+		for i in [1...11]
+			@addEntity(new Box(2, i * 3))
+			@addEntity(new Box(-2, i * 3))
+			@addEntity(new Box(2, -i * 3))
+			@addEntity(new Box(-2, -i * 3))
+
+			@addEntity(new Box(17.5, i * 3))
+			@addEntity(new Box(-17.5, i * 3))
+			@addEntity(new Box(17.5, -i * 3))
+			@addEntity(new Box(-17.5, -i * 3))
+
 		console.log("Game Started Successfully")
 		@update()
 
@@ -97,7 +156,8 @@ class window.Game
 		return entity
 
 	removeEntity: (entity) =>
-		if (entity.update || entity.update2 || entity.dispose)
+		if !entity.alreadyRemoved && (entity.update || entity.update2 || entity.dispose)
+			entity.alreadyRemoved = true
 			@toRemove.push(entity)
 		return entity
 
@@ -111,8 +171,8 @@ class window.Game
 				entity.dispose(this)
 		@toRemove = []
 		
-	update: () =>
-		window.requestAnimationFrame(@update)
+	update: =>
+		@request = window.requestAnimationFrame(@update)
 		@render()
 
 		@io.update()
@@ -141,6 +201,11 @@ class window.Game
 		@camera.position.z += -@camera.position.z * @io.zoom * 0.01
 
 		@lightManager.update(this)
+		@io.update2()
 
-	render: () =>
+		if @player.health <= 0
+			console.log "You Lose"
+			@start()
+
+	render: =>
 		@renderer.render(@scene, @camera)

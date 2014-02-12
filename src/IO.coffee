@@ -9,9 +9,11 @@ K_DOWN = 83				# S
 K_LEFT = 65				# A
 K_RIGHT = 68			# D
 K_FLASHLIGHT = 70		# F
+K_RELOAD = 82			# R
 K_GAMEPAD_TOGGLE = 71	# G
 K_ZOOM_IN = 90			# Z
 K_ZOOM_OUT = 88			# X
+K_RESET = 191			# /
 
 # Button Constants
 B_FLASHLIGHT = 3		# Y
@@ -19,7 +21,7 @@ B_RELOAD = 2			# X
 B_RTRIGGER = 7
 
 class window.IO
-	constructor: ->
+	constructor: (game) ->
 		@moveX = 0
 		@moveY = 0
 		@lookDirection = 0
@@ -27,6 +29,7 @@ class window.IO
 		@trigger = false
 		@zoom = 0
 		@triggerPressed = false
+		@reloadPressed = false
 		@gamepad = null
 		@gamepadEnabled = false
 		@keys = []
@@ -42,8 +45,16 @@ class window.IO
 		window.addEventListener "keydown", (event) =>
 			if !@keys[event.keyCode]
 				switch event.keyCode
-					when K_FLASHLIGHT then @flashlight = !@flashlight
-					when K_GAMEPAD_TOGGLE then @gamepadEnabled = !@gamepadEnabled
+					when K_FLASHLIGHT 
+						if !@gamepad || !@gamepadEnabled
+							@flashlight = !@flashlight
+					when K_GAMEPAD_TOGGLE
+						@gamepadEnabled = !@gamepadEnabled
+					when K_RELOAD
+						if !@gamepad || !@gamepadEnabled
+							@reloadPressed = true
+					when K_RESET
+						game.start()
 
 			@keys[event.keyCode] = true
 
@@ -68,6 +79,9 @@ class window.IO
 		@buttonPressedCallbacks[B_RTRIGGER].push =>
 			@triggerPressed = true
 
+		@buttonPressedCallbacks[B_RELOAD].push =>
+			@reloadPressed = true
+
 	update: =>
 		@moveX = 0
 		@moveY = 0
@@ -79,6 +93,9 @@ class window.IO
 			@gamepadEnabled = true
 
 		if @gamepadEnabled && @gamepad
+			# disable cursor
+			$("body").css("cursor", "none")
+
 			# Register button presses
 			for i in [0...15]
 				if (@gamepad.buttons[i] > BUTTON_THRESHOLD) && (@buttons[i] < BUTTON_THRESHOLD)
@@ -98,7 +115,10 @@ class window.IO
 			if Math.sqrt(lookX * lookX + lookY * lookY) > LOOK_THRESHOLD
 				@lookDirection = Math.atan2(lookY, lookX)
 
-		else 
+		else
+			# enable cursor
+			$("body").css("cursor", "crosshair")
+
 			# keybaord controls
 			if @keys[K_UP] && !@keys[K_DOWN]
 				@moveY = 1.0
@@ -122,5 +142,7 @@ class window.IO
 				@zoom = Math.max(@zoom - 0.08, -1.0)
 			if !@keys[K_ZOOM_IN] && !@keys[K_ZOOM_OUT]
 				@zoom = 0.85 * @zoom
+
 	update2: (game) ->
 		@triggerPressed = false
+		@reloadPressed = false

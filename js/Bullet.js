@@ -21,9 +21,11 @@
 
   RADIUS = 0.05;
 
-  SPEED = 0.1;
+  SPEED = 0.5;
 
   window.Bullet = (function() {
+    Bullet.prototype.isBullet = true;
+
     function Bullet(x, y, z, dx, dy, vx, vy) {
       this.x = x;
       this.y = y;
@@ -41,19 +43,21 @@
       this.mesh = new THREE.Mesh(new THREE.SphereGeometry(RADIUS * 1.0, 16, 16), new THREE.MeshBasicMaterial({
         color: 0xFFAA00
       }));
+      this.mesh.visible = false;
       game.scene.add(this.mesh);
       this.mesh.position.set(this.x, this.y, this.z);
+      this.light = game.req;
       fixDef = new b2FixtureDef();
       fixDef.density = 0.1;
       fixDef.friction = 0.5;
-      fixDef.restitution = 1.0;
+      fixDef.restitution = 0.0;
       fixDef.shape = new b2CircleShape(RADIUS * 0.9);
       bodyDef = new b2BodyDef();
       bodyDef.type = b2Body.b2_dynamicBody;
+      bodyDef.bullet = true;
       this.body = game.world.CreateBody(bodyDef);
       this.body.SetUserData(this);
       this.body.CreateFixture(fixDef);
-      this.body.isBullet = true;
       this.body.SetPosition(new b2Vec2(this.x, this.y));
       this.body.SetLinearVelocity(new b2Vec2(this.vx, this.vy));
       s = Random.normal(SPEED / 10, SPEED);
@@ -70,13 +74,22 @@
       this.mesh.position.y = p.y;
       this.lifespan -= 1 / 60.0;
       if (this.lifespan <= 0) {
-        game.removeEntity(this);
-        return console.log("bullet expired");
+        return game.removeEntity(this);
       }
     };
 
     Bullet.prototype.hit = function(game, other) {
-      game.removeEntity(this);
+      var effect, hitEffectType, p;
+      if (other !== null && !this.alreadyRemoved) {
+        p = this.body.GetWorldCenter();
+        hitEffectType = null;
+        if (other && other.hitEffectType) {
+          hitEffectType = other.hitEffectType;
+        }
+        effect = new HitEffect(p.x, p.y, this.z, hitEffectType);
+        game.addEntity(effect);
+        game.removeEntity(this);
+      }
       return true;
     };
 

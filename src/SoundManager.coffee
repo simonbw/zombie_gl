@@ -10,6 +10,8 @@ class window.SoundManager
 			alert("No context support")
 
 		@loadSound('pistol_shot')
+		@loadSound('pistol_reload')
+		@loadSound('pistol_empty')
 
 	loadSound: (name) ->
 		request = new XMLHttpRequest()
@@ -25,7 +27,10 @@ class window.SoundManager
 		request.send()
 
 	playSound: (name) ->
-		source = @context.createBufferSource()
-		source.buffer = @buffers[name]
-		source.connect(@context.destination)
-		source.start(0)
+		if @buffers[name]
+			source = @context.createBufferSource()
+			source.buffer = @buffers[name]
+			source.connect(@context.destination)
+			source.start(0)
+		else
+			console.log "sound #{name} not loaded" 
