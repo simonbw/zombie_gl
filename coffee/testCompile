@@ -1,2 +1,0 @@
-coffee -c src/*
-rm src/*.js
