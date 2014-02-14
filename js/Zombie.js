@@ -86,7 +86,7 @@
       var p;
       if (other.isBullet) {
         p = this.body.GetWorldCenter();
-        this.health -= 25;
+        this.health -= other.damage;
         if (this.health <= 0 && !this.alreadyRemoved) {
           game.removeEntity(this);
           return game.stats.addKill();

@@ -1,5 +1,5 @@
 class window.Gun
-	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime)->
+	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime, @damage)->
 		@cooldown = 0
 		@ammo = @clipSize
 
@@ -20,7 +20,7 @@ class window.Gun
 				@cooldown += 60.0 / @firerate
 				flash = new MuzzleFlash(x, y, z, dx, dy, vx, vy)
 				game.addEntity(flash)
-				bullet = new Bullet(x + dx * 0.051, y + dy * 0.051, z, dx, dy, vx, vy)
+				bullet = new Bullet(x + dx * 0.051, y + dy * 0.051, z, dx, dy, vx, vy, @damage)
 				game.addEntity(bullet)
 				game.soundManager.playSound("#{@soundName}_shot")
 			else if firstPress && @ammo == 0

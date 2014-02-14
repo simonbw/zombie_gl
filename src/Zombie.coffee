@@ -73,7 +73,7 @@ class window.Zombie
 	hit: (game, other) =>
 		if other.isBullet
 			p = @body.GetWorldCenter()
-			@health -= 25
+			@health -= other.damage
 			if @health <= 0 && !@alreadyRemoved
 				game.removeEntity(this)
 				game.stats.addKill()

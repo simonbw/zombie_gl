@@ -15,7 +15,7 @@ SPEED = 0.5
 class window.Bullet
 	isBullet: true
 
-	constructor: (@x, @y, @z, @dx, @dy, @vx, @vy) ->
+	constructor: (@x, @y, @z, @dx, @dy, @vx, @vy, @damage) ->
 
 	init: (game) ->
 		# Graphics

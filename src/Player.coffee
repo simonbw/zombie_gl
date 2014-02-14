@@ -19,7 +19,7 @@ class window.Player
 	constructor: (@x, @y) ->
 		@health = 100
 		@facingDirection = 0
-		@guns = [new Pistol(), new SMG()]
+		@guns = [new guns['FiveSeven'](), new guns['M4']]
 		@gun = @guns[0]
 		
 		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0x00DD00}))

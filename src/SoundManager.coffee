@@ -13,6 +13,10 @@ class window.SoundManager
 		@loadSound('pistol_reload')
 		@loadSound('pistol_empty')
 
+		@loadSound('rifle_shot')
+		@loadSound('rifle_reload')
+		@loadSound('rifle_empty')
+
 	loadSound: (name) ->
 		request = new XMLHttpRequest()
 		request.responseType = 'arraybuffer'

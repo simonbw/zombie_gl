@@ -41,7 +41,7 @@
       this.mesh.position.set(x, y, SIZE / 2);
       this.mesh.castShadow = true;
       this.mesh.recieveShadow = true;
-      this.health = 100;
+      this.health = 200;
     }
 
     Box.prototype.init = function(game) {
@@ -75,7 +75,7 @@
       var effect, p;
       if (other.isBullet) {
         p = this.body.GetWorldCenter();
-        this.health -= 5;
+        this.health -= other.damage;
         if (this.health <= 0 && !this.alreadyRemoved) {
           game.removeEntity(this);
           effect = new BoxBrokenEffect(p.x, p.y, this.body.GetAngle());

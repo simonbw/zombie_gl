@@ -10,6 +10,9 @@
       this.loadSound('pistol_shot');
       this.loadSound('pistol_reload');
       this.loadSound('pistol_empty');
+      this.loadSound('rifle_shot');
+      this.loadSound('rifle_reload');
+      this.loadSound('rifle_empty');
     }
 
     SoundManager.prototype.loadSound = function(name) {

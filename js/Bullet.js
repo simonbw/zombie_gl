@@ -26,7 +26,7 @@
   window.Bullet = (function() {
     Bullet.prototype.isBullet = true;
 
-    function Bullet(x, y, z, dx, dy, vx, vy) {
+    function Bullet(x, y, z, dx, dy, vx, vy, damage) {
       this.x = x;
       this.y = y;
       this.z = z;
@@ -34,6 +34,7 @@
       this.dy = dy;
       this.vx = vx;
       this.vy = vy;
+      this.damage = damage;
       this.dispose = __bind(this.dispose, this);
       this.hit = __bind(this.hit, this);
     }

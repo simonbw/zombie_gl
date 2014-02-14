@@ -36,7 +36,7 @@
       this.hit = __bind(this.hit, this);
       this.health = 100;
       this.facingDirection = 0;
-      this.guns = [new Pistol(), new SMG()];
+      this.guns = [new guns['FiveSeven'](), new guns['M4']];
       this.gun = this.guns[0];
       this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({
         color: 0x00DD00
