@@ -10,26 +10,33 @@ K_LEFT = 65				# A
 K_RIGHT = 68			# D
 K_FLASHLIGHT = 70		# F
 K_RELOAD = 82			# R
-K_GAMEPAD_TOGGLE = 71	# G
+K_NEXT_GUN = 81			# Q
 K_ZOOM_IN = 90			# Z
 K_ZOOM_OUT = 88			# X
+
+K_GAMEPAD_TOGGLE = 71	# G
 K_RESET = 191			# /
+K_FULLSCREEN = 190		# .
 
 # Button Constants
 B_FLASHLIGHT = 3		# Y
 B_RELOAD = 2			# X
-B_RTRIGGER = 7
+B_NEXT_GUN = 1 			# B
+B_LTRIGGER = 6 			# Right Trigger
+B_RTRIGGER = 7 			# Right Trigger
 
 class window.IO
 	constructor: (game) ->
 		@moveX = 0
 		@moveY = 0
 		@lookDirection = 0
+		@lookDistance = 1.0
 		@flashlight = true
 		@trigger = false
 		@zoom = 0
 		@triggerPressed = false
 		@reloadPressed = false
+		@nextGunPressed = false
 		@gamepad = null
 		@gamepadEnabled = false
 		@keys = []
@@ -55,6 +62,22 @@ class window.IO
 							@reloadPressed = true
 					when K_RESET
 						game.start()
+					when K_FULLSCREEN
+						if document.fullScreen || document.webkitIsFullScreen || document.mozfullScreen
+							if document.cancelFullScreen
+								document.cancelFullScreen()
+							else if document.webkitCancelFullScreen
+								document.webkitCancelFullScreen()
+							else if document.mozCancelFullScreen
+								document.mozCancelFullScreen()
+						else 
+							e = game.renderer.domElement
+							if (e.requestFullScreen)
+								e.requestFullScreen()
+							else if (e.webkitRequestFullScreen)
+								e.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT)
+							else if (e.mozRequestFullScreen)
+								e.mozRequestFullScreen()
 
 			@keys[event.keyCode] = true
 
@@ -81,6 +104,9 @@ class window.IO
 
 		@buttonPressedCallbacks[B_RELOAD].push =>
 			@reloadPressed = true
+
+		@buttonPressedCallbacks[B_NEXT_GUN].push =>
+			@nextGunPressed = true
 
 	update: =>
 		@moveX = 0
@@ -112,7 +138,8 @@ class window.IO
 			lookY = -@gamepad.axes[3]
 			@trigger = @gamepad.buttons[B_RTRIGGER] > BUTTON_THRESHOLD
 
-			if Math.sqrt(lookX * lookX + lookY * lookY) > LOOK_THRESHOLD
+			@lookDistance = Math.sqrt(lookX * lookX + lookY * lookY)
+			if @lookDistance > LOOK_THRESHOLD
 				@lookDirection = Math.atan2(lookY, lookX)
 
 		else
@@ -130,11 +157,12 @@ class window.IO
 				@moveX = 1.0
 			# mouse controls
 			@trigger = !!@mouseButtons[0]
+
 			# TODO: Fix mouse angle stuff
-			lookX = @mousePosition.x - window.innerWidth / 2
+			lookX = (@mousePosition.x - window.innerWidth / 2)
 			lookY = -(@mousePosition.y - window.innerHeight / 2)
-			if Math.sqrt(lookX * lookX + lookY * lookY) > LOOK_THRESHOLD
-				@lookDirection = Math.atan2(lookY, lookX)
+			@lookDistance = Math.sqrt(lookX * lookX + lookY * lookY)
+			@lookDirection = Math.atan2(lookY, lookX)
 			# Camera Controls
 			if @keys[K_ZOOM_IN]
 				@zoom = Math.min(@zoom + 0.08, 1.0)
@@ -146,3 +174,4 @@ class window.IO
 	update2: (game) ->
 		@triggerPressed = false
 		@reloadPressed = false
+		@nextGunPressed = false

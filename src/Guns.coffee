@@ -2,7 +2,7 @@
 
 class window.Pistol extends Gun
 	constructor: ->
-		super("pistol", false, 500, 20, 1.8)
+		super("pistol", false, 1000, 20, 1.8)
 
 class window.SMG extends Gun
 	constructor: ->

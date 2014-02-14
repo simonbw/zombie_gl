@@ -36,7 +36,8 @@
       this.hit = __bind(this.hit, this);
       this.health = 100;
       this.facingDirection = 0;
-      this.gun = new SMG();
+      this.guns = [new Pistol(), new SMG()];
+      this.gun = this.guns[0];
       this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({
         color: 0x00DD00
       }));
@@ -70,6 +71,10 @@
       return this.body.SetLinearDamping(10.0);
     };
 
+    Player.prototype.nextGun = function() {
+      return this.gun = this.guns[(this.guns.indexOf(this.gun) + 1) % this.guns.length];
+    };
+
     Player.prototype.update = function(game) {
       var aimDistance, aimHeight, dx, dy, impulse, p, v;
       this.facingDirection = game.io.lookDirection;
@@ -81,6 +86,9 @@
       v = this.body.GetLinearVelocity();
       aimHeight = HEIGHT * 0;
       aimDistance = 200;
+      if (game.io.nextGunPressed) {
+        this.nextGun();
+      }
       this.gun.update(game);
       if (game.io.trigger) {
         this.gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0);

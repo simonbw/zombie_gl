@@ -19,7 +19,7 @@
 
   b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
-  SIZE = 0.6;
+  SIZE = 1.0;
 
   window.Box = (function() {
     Box.SIZE = SIZE;

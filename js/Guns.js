@@ -7,7 +7,7 @@
     __extends(Pistol, _super);
 
     function Pistol() {
-      Pistol.__super__.constructor.call(this, "pistol", false, 500, 20, 1.8);
+      Pistol.__super__.constructor.call(this, "pistol", false, 1000, 20, 1.8);
     }
 
     return Pistol;

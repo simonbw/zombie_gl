@@ -33,9 +33,9 @@
       this.removeEntity = __bind(this.removeEntity, this);
       this.addEntity = __bind(this.addEntity, this);
       this.start = __bind(this.start, this);
-      console.log("Created New Game");
       this.io = new IO(this);
       Box2D.Common.b2Settings.b2_maxTranslation = 5.0;
+      this.stats = new Stats();
       this.renderer = new THREE.WebGLRenderer({
         antialias: true
       });
@@ -111,6 +111,7 @@
       if (this.request) {
         window.cancelAnimationFrame(this.request);
       }
+      this.stats.newGame();
       this.updateList = [];
       this.updateList2 = [];
       this.toRemove = [];
@@ -167,7 +168,6 @@
         this.addEntity(new Box(17.5, -i * 3));
         this.addEntity(new Box(-17.5, -i * 3));
       }
-      console.log("Game Started Successfully");
       return this.update();
     };
 
@@ -242,7 +242,6 @@
       this.lightManager.update(this);
       this.io.update2();
       if (this.player.health <= 0) {
-        console.log("You Lose");
         return this.start();
       }
     };

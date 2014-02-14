@@ -9,7 +9,7 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
 # Constants
-SIZE = 0.6
+SIZE = 1.0
 
 class window.Box
 	@SIZE = SIZE
@@ -21,6 +21,7 @@ class window.Box
 		texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
 		bump = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
 		material = new THREE.MeshPhongMaterial {
+			# color: 0x77664B,
 			map: texture,
 			bumpMap: bump,
 			bumpScale: 0.02

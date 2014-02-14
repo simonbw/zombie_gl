@@ -88,7 +88,8 @@
         p = this.body.GetWorldCenter();
         this.health -= 25;
         if (this.health <= 0 && !this.alreadyRemoved) {
-          return game.removeEntity(this);
+          game.removeEntity(this);
+          return game.stats.addKill();
         }
       }
     };

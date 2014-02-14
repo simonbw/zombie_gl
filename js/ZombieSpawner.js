@@ -5,7 +5,6 @@
       this.x = x;
       this.y = y;
       this.chance = chance != null ? chance : 1.0;
-      console.log("new zombie spawner " + this.chance);
     }
 
     ZombieSpawner.prototype.init = function(game) {
@@ -21,7 +20,6 @@
     ZombieSpawner.prototype.update = function(game) {
       var zombie;
       if (Random.bool(this.chance / 60)) {
-        console.log("spawning zombie");
         zombie = new Zombie(this.x, this.y);
         return game.addEntity(zombie);
       }

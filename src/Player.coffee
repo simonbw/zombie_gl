@@ -19,8 +19,8 @@ class window.Player
 	constructor: (@x, @y) ->
 		@health = 100
 		@facingDirection = 0
-		# @gun = new Pistol()
-		@gun = new SMG()
+		@guns = [new Pistol(), new SMG()]
+		@gun = @guns[0]
 		
 		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0x00DD00}))
 		@mesh.position.z = HEIGHT / 2
@@ -55,7 +55,8 @@ class window.Player
 		@body.CreateFixture(fixDef)
 		@body.SetLinearDamping(10.0)
 
-
+	nextGun: ->
+		@gun = @guns[(@guns.indexOf(@gun) + 1) % @guns.length]
 
 	update: (game)->
 		@facingDirection = game.io.lookDirection
@@ -70,6 +71,8 @@ class window.Player
 		aimDistance = 200
 
 		# Gun
+		if game.io.nextGunPressed
+			@nextGun()
 		@gun.update(game)
 		if game.io.trigger
 			@gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0)

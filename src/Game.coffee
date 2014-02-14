@@ -15,10 +15,9 @@ PHYSICS_STEPS = 3
 
 class window.Game
 	constructor: () ->
-		console.log("Created New Game")
 		@io = new IO(this)
 		Box2D.Common.b2Settings.b2_maxTranslation = 5.0
-		
+		@stats = new Stats()
 		@renderer = new THREE.WebGLRenderer({antialias:true})
 		@renderer.setSize window.innerWidth, window.innerHeight
 		window.document.body.appendChild(@renderer.domElement)
@@ -75,6 +74,8 @@ class window.Game
 		if @request
 			window.cancelAnimationFrame(@request)
 
+		@stats.newGame()
+		
 		@updateList = []
 		@updateList2 = []
 		@toRemove = []
@@ -143,7 +144,6 @@ class window.Game
 			@addEntity(new Box(17.5, -i * 3))
 			@addEntity(new Box(-17.5, -i * 3))
 
-		console.log("Game Started Successfully")
 		@update()
 
 	addEntity: (entity) =>
@@ -178,7 +178,6 @@ class window.Game
 		@io.update()
 		if @io.moveX != 0
 			n = 100
-			# console.log @io.moveX
 
 		i = 0
 		while i < PHYSICS_STEPS
@@ -204,7 +203,6 @@ class window.Game
 		@io.update2()
 
 		if @player.health <= 0
-			console.log "You Lose"
 			@start()
 
 	render: =>

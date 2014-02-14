@@ -34,3 +34,17 @@ class window.SoundManager
 			source.start(0)
 		else
 			console.log "sound #{name} not loaded" 
+	
+	playSound2: (name) ->
+		if @buffers[name]
+			filter = @context.createBiquadFilter()
+			filter.type = 0
+			filter.frequency.value = Math.pow(10000, Math.random())  + 220
+			filter.connect(@context.destination)
+
+			source = @context.createBufferSource()
+			source.buffer = @buffers[name]
+			source.connect(filter)
+			source.start(0)
+		else
+			console.log "sound #{name} not loaded" 

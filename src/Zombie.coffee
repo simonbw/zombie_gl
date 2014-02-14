@@ -76,6 +76,7 @@ class window.Zombie
 			@health -= 25
 			if @health <= 0 && !@alreadyRemoved
 				game.removeEntity(this)
+				game.stats.addKill()
 
 	dispose: (game) =>
 		game.world.DestroyBody(@body)

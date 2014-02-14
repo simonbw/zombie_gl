@@ -48,6 +48,22 @@
       }
     };
 
+    SoundManager.prototype.playSound2 = function(name) {
+      var filter, source;
+      if (this.buffers[name]) {
+        filter = this.context.createBiquadFilter();
+        filter.type = 0;
+        filter.frequency.value = Math.pow(10000, Math.random()) + 220;
+        filter.connect(this.context.destination);
+        source = this.context.createBufferSource();
+        source.buffer = this.buffers[name];
+        source.connect(filter);
+        return source.start(0);
+      } else {
+        return console.log("sound " + name + " not loaded");
+      }
+    };
+
     return SoundManager;
 
   })();
