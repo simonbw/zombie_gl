@@ -14,14 +14,16 @@ HEIGHT = 15.0
 
 class window.Building
 
+	@material = new THREE.MeshPhongMaterial({
+		color: 0xDDDDDD,
+		specular: 0xDDDDDD,
+		shininess: 1,
+	})
+
 	hitEffectType: "concrete"
 	
 	constructor: (x, y) ->
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), new THREE.MeshPhongMaterial({
-			color: 0xDDDDDD,
-			specular: 0xDDDDDD,
-			shininess: 1,
-			}))
+		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), Building.material)
 		@mesh.position.set(x, y, HEIGHT / 2)
 
 		# @mesh.castShadow = true

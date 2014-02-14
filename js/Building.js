@@ -23,14 +23,16 @@
   HEIGHT = 15.0;
 
   window.Building = (function() {
+    Building.material = new THREE.MeshPhongMaterial({
+      color: 0xDDDDDD,
+      specular: 0xDDDDDD,
+      shininess: 1
+    });
+
     Building.prototype.hitEffectType = "concrete";
 
     function Building(x, y) {
-      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), new THREE.MeshPhongMaterial({
-        color: 0xDDDDDD,
-        specular: 0xDDDDDD,
-        shininess: 1
-      }));
+      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), Building.material);
       this.mesh.position.set(x, y, HEIGHT / 2);
     }
 

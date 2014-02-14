@@ -24,6 +24,8 @@ B_RELOAD = 2			# X
 B_NEXT_GUN = 1 			# B
 B_LTRIGGER = 6 			# Right Trigger
 B_RTRIGGER = 7 			# Right Trigger
+B_ZOOM_IN = 12 			# Right Trigger
+B_ZOOM_OUT = 13 			# Right Trigger
 
 class window.IO
 	constructor: (game) ->
@@ -141,6 +143,13 @@ class window.IO
 			@lookDistance = Math.sqrt(lookX * lookX + lookY * lookY)
 			if @lookDistance > LOOK_THRESHOLD
 				@lookDirection = Math.atan2(lookY, lookX)
+
+			if @gamepad[B_ZOOM_IN]
+				@zoom = Math.min(@zoom + 0.08, 1.0)
+			if @gamepad[B_ZOOM_OUT]
+				@zoom = Math.max(@zoom - 0.08, -1.0)
+			if !@gamepad[B_ZOOM_IN] && !@gamepad[B_ZOOM_OUT]
+				@zoom = 0.85 * @zoom
 
 		else
 			# enable cursor

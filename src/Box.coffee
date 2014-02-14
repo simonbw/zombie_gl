@@ -14,19 +14,23 @@ SIZE = 1.0
 class window.Box
 	@SIZE = SIZE
 
+	@texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
+
+	@bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
+
+	@material = new THREE.MeshPhongMaterial {
+		# color: 0x77664B,
+		map: @texture,
+		bumpMap: @bumpMap,
+		bumpScale: 0.02
+	}
+
 	hitEffectType: "wood"
 
 	constructor: (x, y) ->
 
-		texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
-		bump = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
-		material = new THREE.MeshPhongMaterial {
-			# color: 0x77664B,
-			map: texture,
-			bumpMap: bump,
-			bumpScale: 0.02
-		}
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), material)
+		
+		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), Box.material)
 		@mesh.position.set(x, y, SIZE / 2)
 
 		@mesh.castShadow = true

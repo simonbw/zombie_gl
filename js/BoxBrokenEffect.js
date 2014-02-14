@@ -16,8 +16,15 @@
   EXPLOSION_FORCE = 3.0;
 
   window.BoxBrokenEffect = (function() {
+    BoxBrokenEffect.material = new THREE.MeshPhongMaterial({
+      side: THREE.DoubleSide,
+      map: Box.texture,
+      bumpMap: Box.bumpMap,
+      bumpScale: 0.02
+    });
+
     function BoxBrokenEffect(x, y, angle) {
-      var colors, i, positions, texture, velocities;
+      var geometry, i, mesh, size, _i;
       this.x = x;
       this.y = y;
       this.angle = angle;
@@ -25,94 +32,64 @@
       this.update = __bind(this.update, this);
       this.init = __bind(this.init, this);
       this.lifespan = LIFESPAN;
-      this.geom = new THREE.BufferGeometry();
-      this.geom.dynamic = true;
-      this.geom.attributes = {
-        position: {
-          itemSize: 3,
-          array: new Float32Array(PARTICLE_COUNT * 3),
-          numItems: PARTICLE_COUNT * 3
-        },
-        velocity: {
-          itemSize: 3,
-          array: new Float32Array(PARTICLE_COUNT * 3),
-          numItems: PARTICLE_COUNT * 3
-        },
-        color: {
-          itemSize: 3,
-          array: new Float32Array(PARTICLE_COUNT * 3),
-          numItems: PARTICLE_COUNT * 3
-        }
-      };
-      positions = this.geom.attributes.position.array;
-      velocities = this.geom.attributes.velocity.array;
-      colors = this.geom.attributes.color.array;
-      i = 0;
-      while (i < PARTICLE_COUNT * 3) {
-        positions[i] = (Math.random() - 0.5) * Box.SIZE;
-        positions[i + 1] = (Math.random() - 0.5) * Box.SIZE;
-        positions[i + 2] = (Math.random() - 0.5) * Box.SIZE;
-        velocities[i] = Random.normal(EXPLOSION_FORCE);
-        velocities[i + 1] = Random.normal(EXPLOSION_FORCE);
-        velocities[i + 2] = Random.normal(EXPLOSION_FORCE);
-        colors[i] = 0.35 + Math.random() * 0.4;
-        colors[i + 1] = 0.3 + Math.random() * 0.3;
-        colors[i + 2] = 0.2 + Math.random() * 0.2;
-        i += 3;
+      this.meshes = [];
+      this.velocities = [];
+      this.spins = [];
+      this.meshContainer = new THREE.Object3D();
+      this.meshContainer.position.set(this.x, this.y, Box.SIZE / 2);
+      this.meshContainer.rotation.z = this.angle;
+      size = Box.SIZE;
+      for (i = _i = 0; _i < 6; i = ++_i) {
+        geometry = new THREE.PlaneGeometry(size, size);
+        mesh = new THREE.Mesh(geometry, BoxBrokenEffect.material);
+        this.meshes.push(mesh);
+        this.meshContainer.add(mesh);
+        this.velocities.push(new THREE.Vector3());
+        this.spins.push(new THREE.Vector3());
       }
-      this.geom.computeBoundingSphere();
-      colors = this.geom.attributes.color.needsUpdate = true;
-      texture = THREE.ImageUtils.loadTexture("resources/images/wood_hit.png");
-      this.material = new THREE.ParticleSystemMaterial({
-        vertexColors: THREE.VertexColors,
-        size: 0.02,
-        transparent: true
-      });
-      this.material.depthWrite = false;
-      this.particles = new THREE.ParticleSystem(this.geom, this.material);
-      this.particles.sortParticles = true;
-      this.particles.position.set(this.x, this.y, Box.SIZE / 2);
-      this.particles.rotation.z = this.angle;
+      this.meshes[0].position.z = size / 2;
+      this.meshes[5].position.z = -size / 2;
+      this.meshes[1].position.x = size / 2;
+      this.meshes[1].rotation.y = Math.PI / 2;
+      this.meshes[2].position.x = -size / 2;
+      this.meshes[2].rotation.y = -Math.PI / 2;
+      this.meshes[3].position.y = size / 2;
+      this.meshes[3].rotation.x = Math.PI / 2;
+      this.meshes[4].position.y = -size / 2;
+      this.meshes[4].rotation.x = -Math.PI / 2;
+      this.velocities[0].x = Random.normal(1.0);
+      this.velocities[0].y = Random.normal(1.0);
+      this.velocities[0].z = Math.random() * 2 + 3.0;
+      this.spins[0].z = Random.normal(0.05);
     }
 
     BoxBrokenEffect.prototype.init = function(game) {
-      return game.scene.add(this.particles);
+      return game.scene.add(this.meshContainer);
     };
 
     BoxBrokenEffect.prototype.update = function(game) {
-      var i, positions, velocities;
-      positions = this.geom.attributes.position.array;
-      velocities = this.geom.attributes.velocity.array;
-      i = 0;
-      while (i < PARTICLE_COUNT * 3) {
-        positions[i] += velocities[i] / 60;
-        positions[i + 1] += velocities[i + 1] / 60;
-        positions[i + 2] += velocities[i + 2] / 60;
-        velocities[i] *= DRAG;
-        velocities[i + 1] *= DRAG;
-        velocities[i + 2] *= DRAG;
-        velocities[i + 2] -= GRAVITY;
-        if (positions[i + 2] <= -Box.SIZE / 2) {
-          positions[i + 2] = -Box.SIZE / 2 + 0.0001;
-          velocities[i + 2] *= -0.5;
-          velocities[i] *= 0.5;
-          velocities[i + 1] *= 0.5;
-          if (Math.abs(velocities[i]) < 0.001) {
-            velocities[i] = 0;
-          }
-          if (Math.abs(velocities[i + 1]) < 0.001) {
-            velocities[i + 1] = 0;
-          }
-          if (Math.abs(velocities[i + 2]) < 0.001) {
-            velocities[i + 2] = 0;
-          }
-        }
-        i += 3;
+      var i, mesh, _i, _ref;
+      if (this.meshes[0].position.z > 0.0001) {
+        this.velocities[0].z -= GRAVITY;
+        this.velocities[0].x *= 0.9998;
+        this.velocities[0].y *= 0.9998;
+        this.spins[0].z *= 0.99;
+      } else {
+        this.velocities[0].z = 0;
+        this.velocities[0].x *= 0.94;
+        this.velocities[0].y *= 0.94;
+        this.meshes[0].position.z = 0.00005;
+        this.spins[0].z *= 0.94;
       }
-      this.geom.attributes.position.needsUpdate = true;
-      this.geom.attributes.velocity.needsUpdate = true;
-      this.geom.computeBoundingSphere();
-      this.material.opacity = Math.min(2.0 * this.lifespan / LIFESPAN, 1.0);
+      for (i = _i = 0, _ref = this.meshes.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        mesh = this.meshes[i];
+        mesh.position.x += this.velocities[i].x / 60;
+        mesh.position.y += this.velocities[i].y / 60;
+        mesh.position.z += this.velocities[i].z / 60;
+        mesh.rotation.x += this.spins[i].x;
+        mesh.rotation.y += this.spins[i].y;
+        mesh.rotation.z += this.spins[i].z;
+      }
       this.lifespan--;
       if (this.lifespan <= 0) {
         return game.removeEntity(this);
@@ -124,7 +101,7 @@
         console.log("removing HitEffect twice");
       }
       this.disposed = true;
-      return game.scene.remove(this.particles);
+      return game.scene.remove(this.meshContainer);
     };
 
     return BoxBrokenEffect;

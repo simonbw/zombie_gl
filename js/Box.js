@@ -24,20 +24,22 @@
   window.Box = (function() {
     Box.SIZE = SIZE;
 
+    Box.texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png");
+
+    Box.bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png");
+
+    Box.material = new THREE.MeshPhongMaterial({
+      map: Box.texture,
+      bumpMap: Box.bumpMap,
+      bumpScale: 0.02
+    });
+
     Box.prototype.hitEffectType = "wood";
 
     function Box(x, y) {
       this.dispose = __bind(this.dispose, this);
       this.hit = __bind(this.hit, this);
-      var bump, material, texture;
-      texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png");
-      bump = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png");
-      material = new THREE.MeshPhongMaterial({
-        map: texture,
-        bumpMap: bump,
-        bumpScale: 0.02
-      });
-      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), material);
+      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), Box.material);
       this.mesh.position.set(x, y, SIZE / 2);
       this.mesh.castShadow = true;
       this.mesh.recieveShadow = true;
