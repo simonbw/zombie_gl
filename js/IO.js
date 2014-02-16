@@ -90,6 +90,11 @@
                   _this.reloadPressed = true;
                 }
                 break;
+              case K_NEXT_GUN:
+                if (!_this.gamepad || !_this.gamepadEnabled) {
+                  _this.nextGunPressed = true;
+                }
+                break;
               case K_RESET:
                 game.start();
                 break;
@@ -240,7 +245,7 @@
       }
     };
 
-    IO.prototype.update2 = function(game) {
+    IO.prototype.postUpdate = function(game) {
       this.triggerPressed = false;
       this.reloadPressed = false;
       return this.nextGunPressed = false;

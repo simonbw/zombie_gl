@@ -1,5 +1,5 @@
 class window.Gun
-	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime, @damage)->
+	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime, @damage, @accuracy)->
 		@cooldown = 0
 		@ammo = @clipSize
 
@@ -18,10 +18,14 @@ class window.Gun
 			if @cooldown <= 0 && @ammo > 0
 				@ammo -= 1
 				@cooldown += 60.0 / @firerate
+				game.soundManager.playSound("#{@soundName}_shot")
 				flash = new MuzzleFlash(x, y, z, dx, dy, vx, vy)
 				game.addEntity(flash)
+				
+				direction = Math.atan2(dy, dx) + Random.normal(1.0 / @accuracy)
+				dx = Math.cos(direction)
+				dy = Math.sin(direction)
 				bullet = new Bullet(x + dx * 0.051, y + dy * 0.051, z, dx, dy, vx, vy, @damage)
 				game.addEntity(bullet)
-				game.soundManager.playSound("#{@soundName}_shot")
 			else if firstPress && @ammo == 0
 				game.soundManager.playSound("#{@soundName}_empty")

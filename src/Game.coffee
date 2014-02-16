@@ -76,8 +76,9 @@ class window.Game
 
 		@stats.newGame()
 		
+		@preUpdateList = []
 		@updateList = []
-		@updateList2 = []
+		@postUpdateList = []
 		@toRemove = []
 
 		@initWorld()
@@ -151,12 +152,14 @@ class window.Game
 			entity.init(this)
 		if (entity.update)
 			@updateList.push(entity)
-		if (entity.update2)
-			@updateList2.push(entity)
+		if (entity.preUpdate)
+			@preUpdateList.push(entity)
+		if (entity.postUpdate)
+			@postUpdateList.push(entity)
 		return entity
 
 	removeEntity: (entity) =>
-		if !entity.alreadyRemoved && (entity.update || entity.update2 || entity.dispose)
+		if !entity.alreadyRemoved && (entity.update || entity.preUpdate || entity.postUpdate || entity.dispose)
 			entity.alreadyRemoved = true
 			@toRemove.push(entity)
 		return entity
@@ -165,8 +168,10 @@ class window.Game
 		for entity in @toRemove
 			if entity.update
 				@updateList.splice(@updateList.indexOf(entity), 1)
-			if entity.update2
-				@updateList2.splice(@updateList.indexOf(entity), 1)
+			if entity.preUpdate
+				@preUpdateList.splice(@preUpdateList.indexOf(entity), 1)
+			if entity.postUpdate
+				@postUpdateList.splice(@postUpdateList.indexOf(entity), 1)
 			if entity.dispose
 				entity.dispose(this)
 		@toRemove = []
@@ -176,8 +181,11 @@ class window.Game
 		@render()
 
 		@io.update()
-		if @io.moveX != 0
-			n = 100
+
+		for entity in @preUpdateList
+			entity.preUpdate(this)
+
+		@removalPass()
 
 		i = 0
 		while i < PHYSICS_STEPS
@@ -190,8 +198,8 @@ class window.Game
 		
 		@removalPass()
 
-		for entity in @updateList2
-			entity.update2(this)		
+		for entity in @postUpdateList
+			entity.postUpdate(this)		
 		
 		@removalPass()
 
@@ -200,7 +208,7 @@ class window.Game
 		@camera.position.z += -@camera.position.z * @io.zoom * 0.01
 
 		@lightManager.update(this)
-		@io.update2()
+		@io.postUpdate()
 
 		if @player.health <= 0
 			@start()

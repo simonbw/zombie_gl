@@ -15,7 +15,8 @@ class window.Box
 	@SIZE = SIZE
 
 	@texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
-
+	@texture.anistropy = 16
+	
 	@bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
 
 	@material = new THREE.MeshPhongMaterial {
@@ -28,8 +29,6 @@ class window.Box
 	hitEffectType: "wood"
 
 	constructor: (x, y) ->
-
-		
 		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), Box.material)
 		@mesh.position.set(x, y, SIZE / 2)
 

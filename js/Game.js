@@ -112,8 +112,9 @@
         window.cancelAnimationFrame(this.request);
       }
       this.stats.newGame();
+      this.preUpdateList = [];
       this.updateList = [];
-      this.updateList2 = [];
+      this.postUpdateList = [];
       this.toRemove = [];
       this.initWorld();
       this.initScene();
@@ -178,14 +179,17 @@
       if (entity.update) {
         this.updateList.push(entity);
       }
-      if (entity.update2) {
-        this.updateList2.push(entity);
+      if (entity.preUpdate) {
+        this.preUpdateList.push(entity);
+      }
+      if (entity.postUpdate) {
+        this.postUpdateList.push(entity);
       }
       return entity;
     };
 
     Game.prototype.removeEntity = function(entity) {
-      if (!entity.alreadyRemoved && (entity.update || entity.update2 || entity.dispose)) {
+      if (!entity.alreadyRemoved && (entity.update || entity.preUpdate || entity.postUpdate || entity.dispose)) {
         entity.alreadyRemoved = true;
         this.toRemove.push(entity);
       }
@@ -200,8 +204,11 @@
         if (entity.update) {
           this.updateList.splice(this.updateList.indexOf(entity), 1);
         }
-        if (entity.update2) {
-          this.updateList2.splice(this.updateList.indexOf(entity), 1);
+        if (entity.preUpdate) {
+          this.preUpdateList.splice(this.preUpdateList.indexOf(entity), 1);
+        }
+        if (entity.postUpdate) {
+          this.postUpdateList.splice(this.postUpdateList.indexOf(entity), 1);
         }
         if (entity.dispose) {
           entity.dispose(this);
@@ -211,36 +218,39 @@
     };
 
     Game.prototype.update = function() {
-      var entity, i, n, _i, _j, _len, _len1, _ref, _ref1;
+      var entity, i, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       this.request = window.requestAnimationFrame(this.update);
       this.render();
       this.io.update();
-      if (this.io.moveX !== 0) {
-        n = 100;
+      _ref = this.preUpdateList;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        entity = _ref[_i];
+        entity.preUpdate(this);
       }
+      this.removalPass();
       i = 0;
       while (i < PHYSICS_STEPS) {
         i++;
         this.world.Step(1 / (FRAMERATE * PHYSICS_STEPS), 3, 3);
         this.removalPass();
       }
-      _ref = this.updateList;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        entity = _ref[_i];
+      _ref1 = this.updateList;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        entity = _ref1[_j];
         entity.update(this);
       }
       this.removalPass();
-      _ref1 = this.updateList2;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        entity = _ref1[_j];
-        entity.update2(this);
+      _ref2 = this.postUpdateList;
+      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+        entity = _ref2[_k];
+        entity.postUpdate(this);
       }
       this.removalPass();
       this.camera.position.x = 0.9 * this.camera.position.x + 0.1 * this.player.mesh.position.x;
       this.camera.position.y = 0.9 * this.camera.position.y + 0.1 * this.player.mesh.position.y;
       this.camera.position.z += -this.camera.position.z * this.io.zoom * 0.01;
       this.lightManager.update(this);
-      this.io.update2();
+      this.io.postUpdate();
       if (this.player.health <= 0) {
         return this.start();
       }

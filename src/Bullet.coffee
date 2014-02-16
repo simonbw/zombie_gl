@@ -10,7 +10,7 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
 # Constants
 RADIUS = 0.05
-SPEED = 0.5
+SPEED = 0.25
 
 class window.Bullet
 	isBullet: true
@@ -21,10 +21,11 @@ class window.Bullet
 		# Graphics
 		@mesh = new THREE.Mesh(new THREE.SphereGeometry(RADIUS * 1.0, 16, 16), new THREE.MeshBasicMaterial({color:0xFFAA00}))
 		@mesh.visible = false
-		game.scene.add(@mesh)
 		@mesh.position.set(@x, @y, @z)
+		game.scene.add(@mesh)
 
-		@light = game.req
+		@effect = new BulletEffect(this, @x, @y, @z)
+		game.addEntity(@effect)
 
 		# Physics
 		fixDef = new b2FixtureDef()
@@ -51,12 +52,18 @@ class window.Bullet
 		v = @body.GetLinearVelocity()
 		@mesh.position.x = p.x
 		@mesh.position.y = p.y
+		@updateLine()
 		@lifespan -= 1 / 60.0
 		if @lifespan <= 0
 			game.removeEntity(this)
-	
+
+	updateLine: ->
+		p = @body.GetWorldCenter()
+		@effect.setEnd(p.x, p.y)
+		
 	hit: (game, other) =>
 		if other != null && !@alreadyRemoved
+			@updateLine()
 			p = @body.GetWorldCenter()
 			hitEffectType = null
 			if other && other.hitEffectType
@@ -69,3 +76,40 @@ class window.Bullet
 	dispose: (game) =>
 		game.scene.remove(@mesh)
 		game.world.DestroyBody(@body)
+		@effect.lifespan = 1
+
+
+class BulletEffect
+	constructor: (@bullet, x, y, z)->
+		@lifespan = -1
+		@shouldRemove = false
+		@geometry = new THREE.Geometry()
+		@geometry.vertices.push(new THREE.Vector3(x, y, z));
+		@geometry.vertices.push(new THREE.Vector3(x, y, z));
+		material = new THREE.LineBasicMaterial {
+			color:0xFFFF00,
+			blending:THREE.AdditiveBlending,
+			transparent: true,
+			opacity: 0.1
+		}
+		@line = new THREE.Line(@geometry, material)
+
+	init: (game) ->
+		game.scene.add(@line)
+
+	preUpdate: (game) ->
+		if @lifespan >= 0
+			@lifespan--
+			if @lifespan <= 0
+				game.removeEntity(this)
+		
+	setEnd: (x, y) ->
+		@geometry.vertices[0].x = @geometry.vertices[1].x
+		@geometry.vertices[0].y = @geometry.vertices[1].y
+		@geometry.vertices[0].z = @geometry.vertices[1].z
+		@geometry.vertices[1].x = x
+		@geometry.vertices[1].y = y
+		@geometry.verticesNeedUpdate = true;
+
+	dispose: (game) =>
+		game.scene.remove(@line)

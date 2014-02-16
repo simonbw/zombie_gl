@@ -26,6 +26,8 @@
 
     Box.texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png");
 
+    Box.texture.anistropy = 16;
+
     Box.bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png");
 
     Box.material = new THREE.MeshPhongMaterial({

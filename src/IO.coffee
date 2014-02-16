@@ -62,6 +62,9 @@ class window.IO
 					when K_RELOAD
 						if !@gamepad || !@gamepadEnabled
 							@reloadPressed = true
+					when K_NEXT_GUN
+						if !@gamepad || !@gamepadEnabled
+							@nextGunPressed = true
 					when K_RESET
 						game.start()
 					when K_FULLSCREEN
@@ -180,7 +183,7 @@ class window.IO
 			if !@keys[K_ZOOM_IN] && !@keys[K_ZOOM_OUT]
 				@zoom = 0.85 * @zoom
 
-	update2: (game) ->
+	postUpdate: (game) ->
 		@triggerPressed = false
 		@reloadPressed = false
 		@nextGunPressed = false

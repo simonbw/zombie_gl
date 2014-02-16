@@ -8,7 +8,7 @@
     __extends(FiveSeven, _super);
 
     function FiveSeven() {
-      FiveSeven.__super__.constructor.call(this, "pistol", false, 1000, 20, 1.65, 35);
+      FiveSeven.__super__.constructor.call(this, "pistol", false, 1000, 20, 1.65, 35, 10);
     }
 
     return FiveSeven;
@@ -19,7 +19,7 @@
     __extends(P90, _super);
 
     function P90() {
-      P90.__super__.constructor.call(this, "pistol", true, 700, 50, 1.85, 25);
+      P90.__super__.constructor.call(this, "pistol", true, 700, 50, 1.85, 25, 10);
     }
 
     return P90;
@@ -30,7 +30,7 @@
     __extends(AR15, _super);
 
     function AR15() {
-      AR15.__super__.constructor.call(this, "rifle", false, 700, 30, 2.3, 35);
+      AR15.__super__.constructor.call(this, "rifle", false, 700, 30, 2.37, 35, 30);
     }
 
     return AR15;
@@ -41,7 +41,7 @@
     __extends(M4, _super);
 
     function M4() {
-      M4.__super__.constructor.call(this, "rifle", true, 700, 30, 2.3, 35);
+      M4.__super__.constructor.call(this, "rifle", true, 700, 30, 2.37, 35, 25);
     }
 
     return M4;
