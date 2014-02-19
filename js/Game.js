@@ -234,6 +234,7 @@
         this.world.Step(1 / (FRAMERATE * PHYSICS_STEPS), 3, 3);
         this.removalPass();
       }
+      this.world.ClearForces();
       _ref1 = this.updateList;
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         entity = _ref1[_j];

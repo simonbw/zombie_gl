@@ -1,12 +1,12 @@
 # Imports
-b2Vec2 = Box2D.Common.Math.b2Vec2;
-b2BodyDef = Box2D.Dynamics.b2BodyDef;
-b2Body = Box2D.Dynamics.b2Body;
-b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
-b2Fixture = Box2D.Dynamics.b2Fixture;
-b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
-b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
-b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+b2Vec2 = Box2D.Common.Math.b2Vec2
+b2BodyDef = Box2D.Dynamics.b2BodyDef
+b2Body = Box2D.Dynamics.b2Body
+b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+b2Fixture = Box2D.Dynamics.b2Fixture
+b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 
 # Constants
 RADIUS = 0.3
@@ -19,7 +19,7 @@ class window.Player
 	constructor: (@x, @y) ->
 		@health = 100
 		@facingDirection = 0
-		@guns = [new guns['M4'](), new guns['FiveSeven']()]
+		@guns = [new guns['M4'](), new guns['FiveSeven'](), new guns['P90']()]
 		@gun = @guns[0]
 		
 		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0x00DD00}))
@@ -27,13 +27,13 @@ class window.Player
 		@mesh.rotation.x = Math.PI / 2
 		
 		@flashlight = new THREE.SpotLight(0xFFFFBB, FLASHLIGHT_INTENSITY, FLASHLIGHT_DISTANCE)
-		@flashlight.castShadow = true;
-		@flashlight.shadowMapSoft = true;
-		@flashlight.shadowMapWidth = 2048;
-		@flashlight.shadowMapHeight = 2048;
-		@flashlight.shadowCameraNear = 0.1;
-		@flashlight.shadowCameraFar = 100000;
-		@flashlight.shadowCameraFov = 60;
+		@flashlight.castShadow = true
+		@flashlight.shadowMapSoft = true
+		@flashlight.shadowMapWidth = 2048
+		@flashlight.shadowMapHeight = 2048
+		@flashlight.shadowCameraNear = 0.1
+		@flashlight.shadowCameraFar = 100000
+		@flashlight.shadowCameraFov = 60
 
 	init: (game) ->
 		# Graphics
@@ -54,12 +54,23 @@ class window.Player
 		@body.SetUserData(this)
 		@body.CreateFixture(fixDef)
 		@body.SetLinearDamping(10.0)
+		@body.SetAngularDamping(128.0)
 
 	nextGun: ->
 		@gun = @guns[(@guns.indexOf(@gun) + 1) % @guns.length]
 
+	rotate: (angle) ->
+		limit = 0.3
+		currentAngle = @body.GetAngle()
+		diff = Math.mod(angle - currentAngle + Math.PI, (Math.PI * 2)) - Math.PI
+		diff = diff * Math.abs(diff)
+		torque = Math.min(limit, Math.max(diff, -limit))
+		torque *= 256
+		@body.ApplyTorque(torque)
+
 	update: (game)->
-		@facingDirection = game.io.lookDirection
+		@rotate(game.io.lookDirection)
+		@facingDirection = @body.GetAngle()
 		p = @body.GetWorldCenter()
 		@x = p.x
 		@y = p.y
@@ -75,14 +86,13 @@ class window.Player
 			@nextGun()
 		@gun.update(game)
 		if game.io.trigger
-			@gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0)
+			@body.ApplyTorque(@gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0))
 		if game.io.reloadPressed
 			@gun.reload(game)
 
 		# Physics
 		impulse = new b2Vec2(SPEED * game.io.moveX, SPEED * game.io.moveY)
 		@body.ApplyImpulse(impulse, @body.GetWorldCenter())
-		@body.SetAngle(@facingDirection)
 		
 		# Update graphics
 		@mesh.position.x = p.x

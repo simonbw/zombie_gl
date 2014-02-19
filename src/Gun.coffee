@@ -1,9 +1,9 @@
 class window.Gun
-	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime, @damage, @accuracy)->
+	constructor: (@soundName, @fullauto, @firerate, @clipSize, @reloadTime, @damage, @accuracy, @recoil)->
 		@cooldown = 0
 		@ammo = @clipSize
 		@reloading = false
-		@reloadTime2 = 0.18
+		@reloadTime2 = 0.22
 
 		@reloadSound = "#{@soundName}_reload"
 		@reloadFinishSound = "#{@soundName}_reload_finish"
@@ -37,10 +37,12 @@ class window.Gun
 				flash = new MuzzleFlash(x, y, z, dx, dy, vx, vy)
 				game.addEntity(flash)
 				
-				direction = Math.atan2(dy, dx) + Random.normal(1.0 / @accuracy)
+				direction = Math.atan2(dy, dx) + Random.normal(0.1 / @accuracy)
 				dx = Math.cos(direction)
 				dy = Math.sin(direction)
 				bullet = new Bullet(x + dx * 0.051, y + dy * 0.051, z, dx, dy, vx, vy, @damage)
 				game.addEntity(bullet)
+				return Random.normal(@recoil)
 			else if firstPress && @ammo == 0
 				game.soundManager.playSound(@emptySound)
+		return 0

@@ -14,6 +14,12 @@
     };
   })(this);
 
+  Math.mod = (function(_this) {
+    return function(a, b) {
+      return ((a % b) + b) % b;
+    };
+  })(this);
+
 }).call(this);
 
 //# sourceMappingURL=Util.map

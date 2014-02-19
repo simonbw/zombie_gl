@@ -36,7 +36,7 @@
       this.hit = __bind(this.hit, this);
       this.health = 100;
       this.facingDirection = 0;
-      this.guns = [new guns['M4'](), new guns['FiveSeven']()];
+      this.guns = [new guns['M4'](), new guns['FiveSeven'](), new guns['P90']()];
       this.gun = this.guns[0];
       this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({
         color: 0x00DD00
@@ -68,16 +68,29 @@
       this.body.SetPosition(new b2Vec2(this.x, this.y));
       this.body.SetUserData(this);
       this.body.CreateFixture(fixDef);
-      return this.body.SetLinearDamping(10.0);
+      this.body.SetLinearDamping(10.0);
+      return this.body.SetAngularDamping(128.0);
     };
 
     Player.prototype.nextGun = function() {
       return this.gun = this.guns[(this.guns.indexOf(this.gun) + 1) % this.guns.length];
     };
 
+    Player.prototype.rotate = function(angle) {
+      var currentAngle, diff, limit, torque;
+      limit = 0.3;
+      currentAngle = this.body.GetAngle();
+      diff = Math.mod(angle - currentAngle + Math.PI, Math.PI * 2) - Math.PI;
+      diff = diff * Math.abs(diff);
+      torque = Math.min(limit, Math.max(diff, -limit));
+      torque *= 256;
+      return this.body.ApplyTorque(torque);
+    };
+
     Player.prototype.update = function(game) {
       var aimDistance, aimHeight, dx, dy, impulse, p, v;
-      this.facingDirection = game.io.lookDirection;
+      this.rotate(game.io.lookDirection);
+      this.facingDirection = this.body.GetAngle();
       p = this.body.GetWorldCenter();
       this.x = p.x;
       this.y = p.y;
@@ -91,14 +104,13 @@
       }
       this.gun.update(game);
       if (game.io.trigger) {
-        this.gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0);
+        this.body.ApplyTorque(this.gun.pullTrigger(game, game.io.triggerPressed, p.x + RADIUS * dx, p.y + RADIUS * dy, HEIGHT * 0.6, dx, dy, v.x / 60.0, v.y / 60.0));
       }
       if (game.io.reloadPressed) {
         this.gun.reload(game);
       }
       impulse = new b2Vec2(SPEED * game.io.moveX, SPEED * game.io.moveY);
       this.body.ApplyImpulse(impulse, this.body.GetWorldCenter());
-      this.body.SetAngle(this.facingDirection);
       this.mesh.position.x = p.x;
       this.mesh.position.y = p.y;
       this.flashlight.visible = game.io.flashlight;

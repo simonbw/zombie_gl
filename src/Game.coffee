@@ -1,12 +1,12 @@
 # Imports
-b2Vec2 = Box2D.Common.Math.b2Vec2;
-b2BodyDef = Box2D.Dynamics.b2BodyDef;
-b2Body = Box2D.Dynamics.b2Body;
-b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
-b2Fixture = Box2D.Dynamics.b2Fixture;
-b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
-b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
-b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+b2Vec2 = Box2D.Common.Math.b2Vec2
+b2BodyDef = Box2D.Dynamics.b2BodyDef
+b2Body = Box2D.Dynamics.b2Body
+b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+b2Fixture = Box2D.Dynamics.b2Fixture
+b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 b2World = Box2D.Dynamics.b2World
 
 # Constants
@@ -192,6 +192,7 @@ class window.Game
 			i++
 			@world.Step(1 / (FRAMERATE * PHYSICS_STEPS), 3, 3)
 			@removalPass()
+		@world.ClearForces()
 
 		for entity in @updateList
 			entity.update(this)
@@ -199,7 +200,7 @@ class window.Game
 		@removalPass()
 
 		for entity in @postUpdateList
-			entity.postUpdate(this)		
+			entity.postUpdate(this)
 		
 		@removalPass()
 
