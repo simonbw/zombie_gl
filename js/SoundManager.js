@@ -7,12 +7,13 @@
       if (!this.context) {
         alert("No context support");
       }
+      this.loadSound('gun_empty');
       this.loadSound('pistol_shot');
       this.loadSound('pistol_reload');
-      this.loadSound('pistol_empty');
+      this.loadSound('pistol_reload_finish');
       this.loadSound('rifle_shot');
       this.loadSound('rifle_reload');
-      this.loadSound('rifle_empty');
+      this.loadSound('rifle_reload_finish');
     }
 
     SoundManager.prototype.loadSound = function(name) {

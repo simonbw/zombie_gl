@@ -9,13 +9,15 @@ class window.SoundManager
 		if (!@context)
 			alert("No context support")
 
+		@loadSound('gun_empty')
+		
 		@loadSound('pistol_shot')
 		@loadSound('pistol_reload')
-		@loadSound('pistol_empty')
+		@loadSound('pistol_reload_finish')
 
 		@loadSound('rifle_shot')
 		@loadSound('rifle_reload')
-		@loadSound('rifle_empty')
+		@loadSound('rifle_reload_finish')
 
 	loadSound: (name) ->
 		request = new XMLHttpRequest()

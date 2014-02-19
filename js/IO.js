@@ -122,6 +122,11 @@
           return _this.keys[event.keyCode] = true;
         };
       })(this));
+      window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      };
       window.addEventListener("keyup", (function(_this) {
         return function(event) {
           return _this.keys[event.keyCode] = false;
@@ -205,13 +210,13 @@
         if (this.lookDistance > LOOK_THRESHOLD) {
           this.lookDirection = Math.atan2(lookY, lookX);
         }
-        if (this.gamepad[B_ZOOM_IN]) {
+        if (this.gamepad.buttons[B_ZOOM_IN]) {
           this.zoom = Math.min(this.zoom + 0.08, 1.0);
         }
-        if (this.gamepad[B_ZOOM_OUT]) {
+        if (this.gamepad.buttons[B_ZOOM_OUT]) {
           this.zoom = Math.max(this.zoom - 0.08, -1.0);
         }
-        if (!this.gamepad[B_ZOOM_IN] && !this.gamepad[B_ZOOM_OUT]) {
+        if (!this.gamepad.buttons[B_ZOOM_IN] && !this.gamepad.buttons[B_ZOOM_OUT]) {
           return this.zoom = 0.85 * this.zoom;
         }
       } else {
