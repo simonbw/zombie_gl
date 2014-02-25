@@ -6,14 +6,18 @@
       this.buffers = {};
       if (!this.context) {
         alert("No context support");
+      } else {
+        this.output = this.context.createGain();
+        this.output.connect(this.context.destination);
+        this.output.gain.value = 1.0;
+        this.loadSound('gun_empty');
+        this.loadSound('pistol_shot');
+        this.loadSound('pistol_reload');
+        this.loadSound('pistol_reload_finish');
+        this.loadSound('rifle_shot');
+        this.loadSound('rifle_reload');
+        this.loadSound('rifle_reload_finish');
       }
-      this.loadSound('gun_empty');
-      this.loadSound('pistol_shot');
-      this.loadSound('pistol_reload');
-      this.loadSound('pistol_reload_finish');
-      this.loadSound('rifle_shot');
-      this.loadSound('rifle_reload');
-      this.loadSound('rifle_reload_finish');
     }
 
     SoundManager.prototype.loadSound = function(name) {
@@ -45,23 +49,7 @@
       if (this.buffers[name]) {
         source = this.context.createBufferSource();
         source.buffer = this.buffers[name];
-        source.connect(this.context.destination);
-        return source.start(0);
-      } else {
-        return console.log("sound " + name + " not loaded");
-      }
-    };
-
-    SoundManager.prototype.playSound2 = function(name) {
-      var filter, source;
-      if (this.buffers[name]) {
-        filter = this.context.createBiquadFilter();
-        filter.type = 0;
-        filter.frequency.value = Math.pow(10000, Math.random()) + 220;
-        filter.connect(this.context.destination);
-        source = this.context.createBufferSource();
-        source.buffer = this.buffers[name];
-        source.connect(filter);
+        source.connect(this.output);
         return source.start(0);
       } else {
         return console.log("sound " + name + " not loaded");

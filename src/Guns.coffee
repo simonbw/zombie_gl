@@ -10,11 +10,11 @@ class P90 extends Gun
 
 class AR15 extends Gun
 	constructor: ->
-		super("rifle", false, 700, 30, 1.5, 35, 300, 20)
+		super("rifle", false, 700, 30, 1.5, 50, 300, 20)
 
 class M4 extends Gun
 	constructor: ->
-		super("rifle", true, 700, 30, 1.75, 35, 200, 24)
+		super("rifle", true, 700, 30, 1.75, 50, 200, 24)
 
 window.guns = {
 	'FiveSeven': FiveSeven,

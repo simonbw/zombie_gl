@@ -68,7 +68,7 @@ class window.Box
 	hit: (game, other) =>
 		if other.isBullet
 			p = @body.GetWorldCenter()
-			@health -= other.damage
+			@health -= other.getDamage()
 			if @health <= 0 && !@alreadyRemoved
 				game.removeEntity(this)
 				effect = new BoxBrokenEffect(p.x, p.y, @body.GetAngle())

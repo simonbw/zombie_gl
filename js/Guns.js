@@ -30,7 +30,7 @@
     __extends(AR15, _super);
 
     function AR15() {
-      AR15.__super__.constructor.call(this, "rifle", false, 700, 30, 1.5, 35, 300, 20);
+      AR15.__super__.constructor.call(this, "rifle", false, 700, 30, 1.5, 50, 300, 20);
     }
 
     return AR15;
@@ -41,7 +41,7 @@
     __extends(M4, _super);
 
     function M4() {
-      M4.__super__.constructor.call(this, "rifle", true, 700, 30, 1.75, 35, 200, 24);
+      M4.__super__.constructor.call(this, "rifle", true, 700, 30, 1.75, 50, 200, 24);
     }
 
     return M4;

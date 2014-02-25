@@ -65,11 +65,13 @@ class window.Player
 		diff = Math.mod(angle - currentAngle + Math.PI, (Math.PI * 2)) - Math.PI
 		diff = diff * Math.abs(diff)
 		torque = Math.min(limit, Math.max(diff, -limit))
-		torque *= 256
+		torque *= 512
 		@body.ApplyTorque(torque)
 
-	update: (game)->
+	preUpdate: (game) ->
 		@rotate(game.io.lookDirection)
+
+	update: (game)->
 		@facingDirection = @body.GetAngle()
 		p = @body.GetWorldCenter()
 		@x = p.x

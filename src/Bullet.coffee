@@ -60,7 +60,10 @@ class window.Bullet
 	updateLine: ->
 		p = @body.GetWorldCenter()
 		@effect.setEnd(p.x, p.y)
-		
+	
+	getDamage: (armor) ->
+		return Random.normal(@damage / 10, @damage)
+
 	hit: (game, other) =>
 		if other != null && !@alreadyRemoved
 			@updateLine()

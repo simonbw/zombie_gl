@@ -83,13 +83,16 @@
       diff = Math.mod(angle - currentAngle + Math.PI, Math.PI * 2) - Math.PI;
       diff = diff * Math.abs(diff);
       torque = Math.min(limit, Math.max(diff, -limit));
-      torque *= 256;
+      torque *= 512;
       return this.body.ApplyTorque(torque);
+    };
+
+    Player.prototype.preUpdate = function(game) {
+      return this.rotate(game.io.lookDirection);
     };
 
     Player.prototype.update = function(game) {
       var aimDistance, aimHeight, dx, dy, impulse, p, v;
-      this.rotate(game.io.lookDirection);
       this.facingDirection = this.body.GetAngle();
       p = this.body.GetWorldCenter();
       this.x = p.x;

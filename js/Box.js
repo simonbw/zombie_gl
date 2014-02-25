@@ -79,7 +79,7 @@
       var effect, p;
       if (other.isBullet) {
         p = this.body.GetWorldCenter();
-        this.health -= other.damage;
+        this.health -= other.getDamage();
         if (this.health <= 0 && !this.alreadyRemoved) {
           game.removeEntity(this);
           effect = new BoxBrokenEffect(p.x, p.y, this.body.GetAngle());

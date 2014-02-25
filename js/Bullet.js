@@ -87,6 +87,10 @@
       return this.effect.setEnd(p.x, p.y);
     };
 
+    Bullet.prototype.getDamage = function(armor) {
+      return Random.normal(this.damage / 10, this.damage);
+    };
+
     Bullet.prototype.hit = function(game, other) {
       var effect, hitEffectType, p;
       if (other !== null && !this.alreadyRemoved) {

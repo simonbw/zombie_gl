@@ -24,3 +24,7 @@ ZombieGL is a top-down, 3d, zombie shooter using HTML5 technologies including We
   * / -- New Game
   * . -- Toggle FullScreen
 
+##Todo
+  * Laser Sight
+  * Models
+  * 

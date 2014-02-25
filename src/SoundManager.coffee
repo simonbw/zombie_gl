@@ -8,16 +8,19 @@ class window.SoundManager
 		@buffers = {}
 		if (!@context)
 			alert("No context support")
+		else
+			@output = @context.createGain()
+			@output.connect(@context.destination)
+			@output.gain.value = 1.0
+			@loadSound('gun_empty')
+			
+			@loadSound('pistol_shot')
+			@loadSound('pistol_reload')
+			@loadSound('pistol_reload_finish')
 
-		@loadSound('gun_empty')
-		
-		@loadSound('pistol_shot')
-		@loadSound('pistol_reload')
-		@loadSound('pistol_reload_finish')
-
-		@loadSound('rifle_shot')
-		@loadSound('rifle_reload')
-		@loadSound('rifle_reload_finish')
+			@loadSound('rifle_shot')
+			@loadSound('rifle_reload')
+			@loadSound('rifle_reload_finish')
 
 	loadSound: (name) ->
 		request = new XMLHttpRequest()
@@ -36,21 +39,7 @@ class window.SoundManager
 		if @buffers[name]
 			source = @context.createBufferSource()
 			source.buffer = @buffers[name]
-			source.connect(@context.destination)
-			source.start(0)
-		else
-			console.log "sound #{name} not loaded" 
-	
-	playSound2: (name) ->
-		if @buffers[name]
-			filter = @context.createBiquadFilter()
-			filter.type = 0
-			filter.frequency.value = Math.pow(10000, Math.random())  + 220
-			filter.connect(@context.destination)
-
-			source = @context.createBufferSource()
-			source.buffer = @buffers[name]
-			source.connect(filter)
+			source.connect(@output)
 			source.start(0)
 		else
 			console.log "sound #{name} not loaded" 
