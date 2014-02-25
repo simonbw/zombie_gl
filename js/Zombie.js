@@ -19,28 +19,32 @@
 
   b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
-  RADIUS = 0.3;
+  RADIUS = 0.4;
 
   HEIGHT = 2.0;
 
-  SPEED = 0.25;
+  SPEED = 0.16;
 
   window.Zombie = (function() {
     Zombie.prototype.isZombie = true;
 
-    Zombie.prototype.hitEffectType = "flesh";
+    Zombie.prototype.hitEffectType = "metal";
 
     function Zombie(x, y) {
       this.x = x;
       this.y = y;
       this.dispose = __bind(this.dispose, this);
       this.hit = __bind(this.hit, this);
+      this.speed = Random.normal(SPEED / 10, SPEED);
       this.facingDirection = 0;
-      this.health = 100;
-      this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({
-        color: 0xDD0000
+      this.health = 200;
+      this.mesh = new THREE.Mesh(Models.models['zombie'].geometry, new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+        specualr: 0xFFFFFF,
+        shininess: 10,
+        metal: true
       }));
-      this.mesh.position.set(this.x, this.y, HEIGHT / 2);
+      this.mesh.position.set(this.x, this.y, 0);
       this.mesh.rotation.x = Math.PI / 2;
       this.target = null;
     }
@@ -75,9 +79,10 @@
       dx = Math.cos(this.facingDirection);
       dy = Math.sin(this.facingDirection);
       v = this.body.GetLinearVelocity();
-      impulse = new b2Vec2(SPEED * dx, SPEED * dy);
+      impulse = new b2Vec2(this.speed * dx, this.speed * dy);
       this.body.ApplyImpulse(impulse, this.body.GetWorldCenter());
       this.body.SetAngle(this.facingDirection);
+      this.mesh.rotation.y = this.facingDirection;
       this.mesh.position.x = p.x;
       return this.mesh.position.y = p.y;
     };

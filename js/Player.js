@@ -114,6 +114,7 @@
       }
       impulse = new b2Vec2(SPEED * game.io.moveX, SPEED * game.io.moveY);
       this.body.ApplyImpulse(impulse, this.body.GetWorldCenter());
+      this.mesh.rotation.y = this.facingDirection;
       this.mesh.position.x = p.x;
       this.mesh.position.y = p.y;
       this.flashlight.visible = game.io.flashlight;

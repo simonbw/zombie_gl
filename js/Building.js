@@ -26,7 +26,8 @@
     Building.material = new THREE.MeshPhongMaterial({
       color: 0xDDDDDD,
       specular: 0xDDDDDD,
-      shininess: 1
+      shininess: 1,
+      shading: THREE.FlatShading
     });
 
     Building.prototype.hitEffectType = "concrete";

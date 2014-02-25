@@ -27,8 +27,7 @@
       request.open('GET', "resources/sounds/" + name + ".wav", true);
       onDecode = (function(_this) {
         return function(buffer) {
-          _this.buffers[name] = buffer;
-          return console.log("sound " + name + " loaded");
+          return _this.buffers[name] = buffer;
         };
       })(this);
       onError = (function(_this) {

@@ -9,21 +9,29 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
 # Constants
-RADIUS = 0.3
+RADIUS = 0.4
 HEIGHT = 2.0
-SPEED = 0.25
+SPEED = 0.16
 
 class window.Zombie
 
 	isZombie: true
 	
-	hitEffectType: "flesh"
+	hitEffectType: "metal"
 
 	constructor: (@x, @y) ->
+		@speed = Random.normal(SPEED / 10, SPEED)
 		@facingDirection = 0
-		@health = 100
-		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0xDD0000}))
-		@mesh.position.set(@x, @y, HEIGHT / 2)
+		@health = 200
+		# @mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0xDD0000}))
+		@mesh = new THREE.Mesh Models.models['zombie'].geometry, new THREE.MeshPhongMaterial {
+			color: 0xDDDDDD,
+			specualr: 0xFFFFFF,
+			shininess: 10,
+			# shading: THREE.FlatShading,
+			metal: true
+		}
+		@mesh.position.set(@x, @y, 0)
 		@mesh.rotation.x = Math.PI / 2
 		@target = null
 
@@ -62,11 +70,12 @@ class window.Zombie
 		v = @body.GetLinearVelocity()
 
 		# Physics
-		impulse = new b2Vec2(SPEED * dx, SPEED * dy)
+		impulse = new b2Vec2(@speed * dx, @speed * dy)
 		@body.ApplyImpulse(impulse, @body.GetWorldCenter())
 		@body.SetAngle(@facingDirection)
 		
 		# Update graphics
+		@mesh.rotation.y = @facingDirection
 		@mesh.position.x = p.x
 		@mesh.position.y = p.y
 

@@ -28,7 +28,6 @@ class window.SoundManager
 		request.open('GET', "resources/sounds/#{name}.wav", true)
 		onDecode = (buffer) =>
 			@buffers[name] = buffer
-			console.log "sound #{name} loaded"
 		onError = (error) =>
 			alert(error)
 		request.onload = =>

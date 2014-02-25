@@ -23,6 +23,7 @@ class window.Player
 		@gun = @guns[0]
 		
 		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(RADIUS, RADIUS, HEIGHT, 40, 1), new THREE.MeshLambertMaterial({color: 0x00DD00}))
+		# @mesh = new THREE.Mesh Models.models['player'].geometry, new THREE.MeshLambertMaterial {color: 0x776655}
 		@mesh.position.z = HEIGHT / 2
 		@mesh.rotation.x = Math.PI / 2
 		
@@ -97,6 +98,7 @@ class window.Player
 		@body.ApplyImpulse(impulse, @body.GetWorldCenter())
 		
 		# Update graphics
+		@mesh.rotation.y = @facingDirection
 		@mesh.position.x = p.x
 		@mesh.position.y = p.y
 

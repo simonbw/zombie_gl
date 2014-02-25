@@ -18,6 +18,7 @@ class window.Building
 		color: 0xDDDDDD,
 		specular: 0xDDDDDD,
 		shininess: 1,
+		shading: THREE.FlatShading,
 	})
 
 	hitEffectType: "concrete"

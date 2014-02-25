@@ -33,7 +33,7 @@
     Box.material = new THREE.MeshPhongMaterial({
       map: Box.texture,
       bumpMap: Box.bumpMap,
-      bumpScale: 0.02
+      bumpScale: 0.022
     });
 
     Box.prototype.hitEffectType = "wood";

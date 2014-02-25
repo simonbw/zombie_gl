@@ -23,7 +23,7 @@ class window.Box
 		# color: 0x77664B,
 		map: @texture,
 		bumpMap: @bumpMap,
-		bumpScale: 0.02
+		bumpScale: 0.022
 	}
 
 	hitEffectType: "wood"
