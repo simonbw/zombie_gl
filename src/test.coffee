@@ -1,3 +1,3 @@
 jQuery ->
-	game = new ShadowTest
-	game.start()
+    game = new ShadowTest
+    game.start()

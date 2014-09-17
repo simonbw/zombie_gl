@@ -16,33 +16,34 @@ LIGHT_RADIUS = 20
 LIGHT_INTENSITY = 0.4
 
 class window.StreetLight
-	
-	hitEffectType: "metal"
 
-	constructor: (x, y) ->
-		@x = x
-		@y = y
+    hitEffectType: "metal"
 
-		@mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1), new THREE.MeshPhongMaterial({color: 0x222222}))
-		@mesh.rotation.x = Math.PI / 2
-		@mesh.position.set(x, y, HEIGHT / 2)
+    constructor: (x, y) ->
+        @x = x
+        @y = y
 
-	init: (game) ->
-		# Graphics
-		game.scene.add(@mesh)
+        @mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1),
+                new THREE.MeshPhongMaterial({color: 0x222222}))
+        @mesh.rotation.x = Math.PI / 2
+        @mesh.position.set(x, y, HEIGHT / 2)
 
-		@light = game.lightManager.getPointLight(@x, @y, HEIGHT, LIGHT_INTENSITY, LIGHT_RADIUS, LIGHT_COLOR)
+    init: (game) ->
+        # Graphics
+        game.scene.add(@mesh)
 
-		# Physics
-		fixDef = new b2FixtureDef()
-		fixDef.density = 1.0
-		fixDef.friction = 0.5
-		fixDef.restitution = 0.02
-		fixDef.shape = new b2CircleShape(SIZE)
-		bodyDef = new b2BodyDef()
-		bodyDef.type = b2Body.b2_staticBody
+        @light = game.lightManager.getPointLight(@x, @y, HEIGHT, LIGHT_INTENSITY, LIGHT_RADIUS, LIGHT_COLOR)
 
-		@body = game.world.CreateBody(bodyDef)
-		@body.SetUserData(this)
-		@body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
-		@body.CreateFixture(fixDef)
+        # Physics
+        fixDef = new b2FixtureDef()
+        fixDef.density = 1.0
+        fixDef.friction = 0.5
+        fixDef.restitution = 0.02
+        fixDef.shape = new b2CircleShape(SIZE)
+        bodyDef = new b2BodyDef()
+        bodyDef.type = b2Body.b2_staticBody
+
+        @body = game.world.CreateBody(bodyDef)
+        @body.SetUserData(this)
+        @body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
+        @body.CreateFixture(fixDef)

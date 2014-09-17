@@ -1,7 +1,4 @@
 
-
-
-
 class window.Random
 	@bool: (chance = 0.5) ->
 		return Math.random() < chance

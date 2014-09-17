@@ -1,5 +1,3 @@
-
-
 class FiveSeven extends Gun
 	constructor: ->
 		super("pistol", false, 1000, 20, 0.95 , 35, 50, 100)

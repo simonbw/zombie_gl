@@ -5,7 +5,7 @@ SPOT_LIGHTS = 0
 class window.LightManager
 
 	constructor: (game) ->
-		
+
 	reset: (game) ->
 		@pointLights = []
 		@pointLightRequests = []
@@ -30,8 +30,8 @@ class window.LightManager
 		cx = game.camera.position.x
 		cy = game.camera.position.y
 		@pointLightRequests.sort (a, b) ->
-			distA = (Math.pow(a.position.x - cx, 2) + Math.pow(a.position.y - cy, 2)) 
-			distB = (Math.pow(b.position.x - cx, 2) + Math.pow(b.position.y - cy, 2)) 
+			distA = (Math.pow(a.position.x - cx, 2) + Math.pow(a.position.y - cy, 2))
+			distB = (Math.pow(b.position.x - cx, 2) + Math.pow(b.position.y - cy, 2))
 			return distA * a.priority / a.distance - distB * b.priority / b.distance
 
 		# # assign lights to the top requested

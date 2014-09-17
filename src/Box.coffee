@@ -12,68 +12,68 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 SIZE = 1.0
 
 class window.Box
-	@SIZE = SIZE
+    @SIZE = SIZE
 
-	@texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
-	@texture.anistropy = 16
-	
-	@bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
+    @texture = new THREE.ImageUtils.loadTexture("resources/images/crate1_diffuse.png")
+    @texture.anistropy = 16
 
-	@material = new THREE.MeshPhongMaterial {
-		# color: 0x77664B,
-		map: @texture,
-		bumpMap: @bumpMap,
-		bumpScale: 0.022
-	}
+    @bumpMap = new THREE.ImageUtils.loadTexture("resources/images/crate1_bump.png")
 
-	hitEffectType: "wood"
+    @material = new THREE.MeshPhongMaterial {
+#       color: 0x77664B,
+        map: @texture,
+        bumpMap: @bumpMap,
+        bumpScale: 0.022
+    }
 
-	constructor: (x, y) ->
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), Box.material)
-		@mesh.position.set(x, y, SIZE / 2)
+    hitEffectType: "wood"
 
-		@mesh.castShadow = true
-		@mesh.recieveShadow = true
+    constructor: (x, y) ->
+        @mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, SIZE), Box.material)
+        @mesh.position.set(x, y, SIZE / 2)
 
-		@health = 200
+        @mesh.castShadow = true
+        @mesh.recieveShadow = true
 
-	init: (game) ->
-		# Graphics
-		game.scene.add(@mesh)
+        @health = 200
 
-		# Physics
-		fixDef = new b2FixtureDef()
-		fixDef.density = 2.0
-		fixDef.friction = 0.5
-		fixDef.restitution = 0.02
-		fixDef.shape = new b2PolygonShape()
-		fixDef.shape.SetAsBox(SIZE / 2, SIZE / 2)
-		bodyDef = new b2BodyDef()
-		bodyDef.type = b2Body.b2_dynamicBody
+    init: (game) ->
+        # Graphics
+        game.scene.add(@mesh)
 
-		@body = game.world.CreateBody(bodyDef)
-		@body.SetUserData(this)
-		@body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
-		@body.CreateFixture(fixDef)
-		@body.SetLinearDamping(10.0)
-		@body.SetAngularDamping(30.0)
+        # Physics
+        fixDef = new b2FixtureDef()
+        fixDef.density = 2.0
+        fixDef.friction = 0.5
+        fixDef.restitution = 0.02
+        fixDef.shape = new b2PolygonShape()
+        fixDef.shape.SetAsBox(SIZE / 2, SIZE / 2)
+        bodyDef = new b2BodyDef()
+        bodyDef.type = b2Body.b2_dynamicBody
 
-	update: (game)->
-		# Update graphics
-		p = @body.GetWorldCenter()
-		@mesh.position.x = p.x
-		@mesh.position.y = p.y
-		@mesh.rotation.z = @body.GetAngle()
+        @body = game.world.CreateBody(bodyDef)
+        @body.SetUserData(this)
+        @body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
+        @body.CreateFixture(fixDef)
+        @body.SetLinearDamping(10.0)
+        @body.SetAngularDamping(30.0)
 
-	hit: (game, other) =>
-		if other.isBullet
-			p = @body.GetWorldCenter()
-			@health -= other.getDamage()
-			if @health <= 0 && !@alreadyRemoved
-				game.removeEntity(this)
-				effect = new BoxBrokenEffect(p.x, p.y, @body.GetAngle())
-				game.addEntity(effect)
+    update: (game)->
+        # Update graphics
+        p = @body.GetWorldCenter()
+        @mesh.position.x = p.x
+        @mesh.position.y = p.y
+        @mesh.rotation.z = @body.GetAngle()
 
-	dispose: (game) =>
-		game.world.DestroyBody(@body)
-		game.scene.remove(@mesh)
+    hit: (game, other) =>
+        if other.isBullet
+            p = @body.GetWorldCenter()
+            @health -= other.getDamage()
+            if @health <= 0 && !@alreadyRemoved
+                game.removeEntity(this)
+                effect = new BoxBrokenEffect(p.x, p.y, @body.GetAngle())
+                game.addEntity(effect)
+
+    dispose: (game) =>
+        game.world.DestroyBody(@body)
+        game.scene.remove(@mesh)
