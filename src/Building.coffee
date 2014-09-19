@@ -14,37 +14,38 @@ HEIGHT = 15.0
 
 class window.Building
 
-	@material = new THREE.MeshPhongMaterial({
-		color: 0xDDDDDD,
-		specular: 0xDDDDDD,
-		shininess: 1,
-		shading: THREE.FlatShading,
-	})
+    @material = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+        specular: 0xDDDDDD,
+        shininess: 1,
+        shading: THREE.FlatShading,
+    })
 
-	hitEffectType: "concrete"
-	
-	constructor: (x, y) ->
-		@mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, HEIGHT), Building.material)
-		@mesh.position.set(x, y, HEIGHT / 2)
+    hitEffectType: "concrete"
 
-		# @mesh.castShadow = true
-		# @mesh.receiveShadow = true
+    constructor: (x, y) ->
+        height = Random.normal(2, HEIGHT)
+        @mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, height), Building.material)
+        @mesh.position.set(x + SIZE / 2, y + SIZE / 2, height / 2)
 
-	init: (game) ->
-		# Graphics
-		game.scene.add(@mesh)
+    # @mesh.castShadow = true
+    # @mesh.receiveShadow = true
 
-		# Physics
-		fixDef = new b2FixtureDef()
-		fixDef.density = 1.0
-		fixDef.friction = 0.5
-		fixDef.restitution = 0.02
-		fixDef.shape = new b2PolygonShape()
-		fixDef.shape.SetAsBox(SIZE / 2, SIZE / 2)
-		bodyDef = new b2BodyDef()
-		bodyDef.type = b2Body.b2_staticBody
+    init: (game) ->
+        # Graphics
+        game.scene.add(@mesh)
 
-		@body = game.world.CreateBody(bodyDef)
-		@body.SetUserData(this)
-		@body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
-		@body.CreateFixture(fixDef)
+        # Physics
+        fixDef = new b2FixtureDef()
+        fixDef.density = 1.0
+        fixDef.friction = 0.5
+        fixDef.restitution = 0.02
+        fixDef.shape = new b2PolygonShape()
+        fixDef.shape.SetAsBox(SIZE / 2, SIZE / 2)
+        bodyDef = new b2BodyDef()
+        bodyDef.type = b2Body.b2_staticBody
+
+        @body = game.world.CreateBody(bodyDef)
+        @body.SetUserData(this)
+        @body.SetPosition(new b2Vec2(@mesh.position.x, @mesh.position.y))
+        @body.CreateFixture(fixDef)

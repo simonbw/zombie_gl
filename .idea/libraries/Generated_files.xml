@@ -1,0 +1,67 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/js/StreetLight.js" />
+        <item url="file://$PROJECT_DIR$/js/SectorManager.js" />
+        <item url="file://$PROJECT_DIR$/js/Zombie.js" />
+        <item url="file://$PROJECT_DIR$/js/MuzzleFlash.js" />
+        <item url="file://$PROJECT_DIR$/js/Bullet.js" />
+        <item url="file://$PROJECT_DIR$/js/Random.js" />
+        <item url="file://$PROJECT_DIR$/js/Player.js" />
+        <item url="file://$PROJECT_DIR$/js/LightManager.js" />
+        <item url="file://$PROJECT_DIR$/js/IO.js" />
+        <item url="file://$PROJECT_DIR$/js/Models.js" />
+        <item url="file://$PROJECT_DIR$/js/main.js" />
+        <item url="file://$PROJECT_DIR$/js/Gun.js" />
+        <item url="file://$PROJECT_DIR$/js/Ground.js" />
+        <item url="file://$PROJECT_DIR$/js/HitEffect.js" />
+        <item url="file://$PROJECT_DIR$/js/Guns.js" />
+        <item url="file://$PROJECT_DIR$/js/Sector.js" />
+        <item url="file://$PROJECT_DIR$/js/Game.js" />
+        <item url="file://$PROJECT_DIR$/js/ShadowTest.js" />
+        <item url="file://$PROJECT_DIR$/js/SoundManager.js" />
+        <item url="file://$PROJECT_DIR$/js/test.js" />
+        <item url="file://$PROJECT_DIR$/js/Stats.js" />
+        <item url="file://$PROJECT_DIR$/js/ZombieSpawner.js" />
+        <item url="file://$PROJECT_DIR$/js/Util.js" />
+        <item url="file://$PROJECT_DIR$/js/BoxBrokenEffect.js" />
+        <item url="file://$PROJECT_DIR$/js/Building.js" />
+        <item url="file://$PROJECT_DIR$/js/Box.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/js/src/Sector.js" />
+      <root url="file://$PROJECT_DIR$/js/src/Zombie.js" />
+      <root url="file://$PROJECT_DIR$/js/src/Sector.js" />
+      <root url="file://$PROJECT_DIR$/js/src/Zombie.js" />
+      <root url="file://$PROJECT_DIR$/js/StreetLight.js" />
+      <root url="file://$PROJECT_DIR$/js/SectorManager.js" />
+      <root url="file://$PROJECT_DIR$/js/Zombie.js" />
+      <root url="file://$PROJECT_DIR$/js/MuzzleFlash.js" />
+      <root url="file://$PROJECT_DIR$/js/Bullet.js" />
+      <root url="file://$PROJECT_DIR$/js/Random.js" />
+      <root url="file://$PROJECT_DIR$/js/Player.js" />
+      <root url="file://$PROJECT_DIR$/js/LightManager.js" />
+      <root url="file://$PROJECT_DIR$/js/IO.js" />
+      <root url="file://$PROJECT_DIR$/js/Models.js" />
+      <root url="file://$PROJECT_DIR$/js/main.js" />
+      <root url="file://$PROJECT_DIR$/js/Gun.js" />
+      <root url="file://$PROJECT_DIR$/js/Ground.js" />
+      <root url="file://$PROJECT_DIR$/js/HitEffect.js" />
+      <root url="file://$PROJECT_DIR$/js/Guns.js" />
+      <root url="file://$PROJECT_DIR$/js/Sector.js" />
+      <root url="file://$PROJECT_DIR$/js/Game.js" />
+      <root url="file://$PROJECT_DIR$/js/ShadowTest.js" />
+      <root url="file://$PROJECT_DIR$/js/SoundManager.js" />
+      <root url="file://$PROJECT_DIR$/js/test.js" />
+      <root url="file://$PROJECT_DIR$/js/Stats.js" />
+      <root url="file://$PROJECT_DIR$/js/ZombieSpawner.js" />
+      <root url="file://$PROJECT_DIR$/js/Util.js" />
+      <root url="file://$PROJECT_DIR$/js/BoxBrokenEffect.js" />
+      <root url="file://$PROJECT_DIR$/js/Building.js" />
+      <root url="file://$PROJECT_DIR$/js/Box.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

@@ -1,5 +1,5 @@
 jQuery ->
-	Models.init ->
-		game = new Game
-		game.start()
+    Models.init ->
+        game = new Game
+        game.start()
 		

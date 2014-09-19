@@ -144,8 +144,10 @@ class window.Game
 
         @initWorld()
         @initScene()
+        #@initEntities()
 
-        @player = @addEntity(new Player(0, 1))
+        @player = @addEntity(new Player(0, 0))
+        @addEntity(new SectorManager(this))
 
         @update()
 

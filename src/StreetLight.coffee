@@ -11,9 +11,9 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 # Constants
 SIZE = 0.2
 HEIGHT = 5.0
-LIGHT_COLOR = 0x55AAFF
-LIGHT_RADIUS = 20
-LIGHT_INTENSITY = 0.4
+LIGHT_COLOR = 0xFFFFEE
+LIGHT_RADIUS = 24
+LIGHT_INTENSITY = 0.5
 
 class window.StreetLight
 
