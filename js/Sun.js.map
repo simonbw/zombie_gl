@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Sun.js",
+  "sourceRoot": "..\\src",
+  "sources": [
+    "Sun.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,GAAA;;AAAA,EAAM;AACW,IAAA,aAAA,GAAA,CAAb;;AAAA,kBAEA,IAAA,GAAM,SAAC,IAAD,GAAA,CAFN,CAAA;;AAAA,kBAIA,MAAA,GAAQ,SAAA,GAAA,CAJR,CAAA;;AAAA,kBAMA,OAAA,GAAS,SAAA,GAAA,CANT,CAAA;;eAAA;;MADJ,CAAA;AAAA"
+}
