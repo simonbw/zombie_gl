@@ -14,25 +14,24 @@ HEIGHT = 15.0
 
 class window.Building
 
-    @material = new THREE.MeshPhongMaterial({
-        color: 0xDDDDDD,
-        specular: 0xDDDDDD,
-        shininess: 1,
-        shading: THREE.FlatShading,
-    })
+    @material = new THREE.MeshPhongMaterial {
+        color: 0xDDDDDD
+        specular: 0xDDDDDD
+        shininess: 1
+        shading: THREE.FlatShading
+    }
 
     hitEffectType: "concrete"
 
-    constructor: (x, y) ->
-        height = Random.normal(2, HEIGHT)
-        @mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, height), Building.material)
-        @mesh.position.set(x + SIZE / 2, y + SIZE / 2, height / 2)
-
-    # @mesh.castShadow = true
-    # @mesh.receiveShadow = true
+    constructor: (@x, @y) ->
 
     init: (game) ->
         # Graphics
+        height = Random.normal(2, HEIGHT)
+        @mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, height), Building.material)
+        @mesh.position.set(@x + SIZE / 2, @y + SIZE / 2, height / 2)
+        # @mesh.castShadow = true
+        # @mesh.receiveShadow = true
         game.scene.add(@mesh)
 
         # Physics

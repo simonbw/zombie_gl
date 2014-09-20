@@ -17,19 +17,21 @@ LIGHT_INTENSITY = 0.5
 
 class window.StreetLight
 
+    @material = new THREE.MeshPhongMaterial {
+        color: 0x222222
+    }
+
     hitEffectType: "metal"
 
-    constructor: (x, y) ->
-        @x = x
-        @y = y
-
-        @mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1),
-                new THREE.MeshPhongMaterial({color: 0x222222}))
-        @mesh.rotation.x = Math.PI / 2
-        @mesh.position.set(x, y, HEIGHT / 2)
+    constructor: (@x, @y) ->
 
     init: (game) ->
         # Graphics
+        # TODO: Should this geometry and material be shared?
+        @mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1),
+                material)
+        @mesh.rotation.x = Math.PI / 2
+        @mesh.position.set(@x, @y, HEIGHT / 2)
         game.scene.add(@mesh)
 
         @light = game.lightManager.getPointLight(@x, @y, HEIGHT, LIGHT_INTENSITY, LIGHT_RADIUS, LIGHT_COLOR)

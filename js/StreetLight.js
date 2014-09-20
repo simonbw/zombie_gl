@@ -29,20 +29,22 @@
   LIGHT_INTENSITY = 0.5;
 
   window.StreetLight = (function() {
+    StreetLight.material = new THREE.MeshPhongMaterial({
+      color: 0x222222
+    });
+
     StreetLight.prototype.hitEffectType = "metal";
 
     function StreetLight(x, y) {
       this.x = x;
       this.y = y;
-      this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1), new THREE.MeshPhongMaterial({
-        color: 0x222222
-      }));
-      this.mesh.rotation.x = Math.PI / 2;
-      this.mesh.position.set(x, y, HEIGHT / 2);
     }
 
     StreetLight.prototype.init = function(game) {
       var bodyDef, fixDef;
+      this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(SIZE, SIZE, HEIGHT, 12, 1), material);
+      this.mesh.rotation.x = Math.PI / 2;
+      this.mesh.position.set(this.x, this.y, HEIGHT / 2);
       game.scene.add(this.mesh);
       this.light = game.lightManager.getPointLight(this.x, this.y, HEIGHT, LIGHT_INTENSITY, LIGHT_RADIUS, LIGHT_COLOR);
       fixDef = new b2FixtureDef();

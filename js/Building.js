@@ -33,14 +33,15 @@
     Building.prototype.hitEffectType = "concrete";
 
     function Building(x, y) {
-      var height;
-      height = Random.normal(2, HEIGHT);
-      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, height), Building.material);
-      this.mesh.position.set(x + SIZE / 2, y + SIZE / 2, height / 2);
+      this.x = x;
+      this.y = y;
     }
 
     Building.prototype.init = function(game) {
-      var bodyDef, fixDef;
+      var bodyDef, fixDef, height;
+      height = Random.normal(2, HEIGHT);
+      this.mesh = new THREE.Mesh(new THREE.CubeGeometry(SIZE, SIZE, height), Building.material);
+      this.mesh.position.set(this.x + SIZE / 2, this.y + SIZE / 2, height / 2);
       game.scene.add(this.mesh);
       fixDef = new b2FixtureDef();
       fixDef.density = 1.0;
